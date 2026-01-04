@@ -1,0 +1,924 @@
+{
+  "title": "SME Exit Readiness Assessment",
+  "description": "Assess your organisation's readiness for exit across 6 critical domains. Transparency over perfection - understanding your gaps is more valuable than hiding them. Complete in 30-60 minutes.",
+  "scale": {
+    "min": 0,
+    "max": 4,
+    "labels": ["Incomplete", "Initial", "Defined", "Managed", "Optimised"]
+  },
+  "levels": [
+    {
+      "name": "Incomplete",
+      "min": 0,
+      "max": 0.9,
+      "color": "#dc2626",
+      "description": "Significant gaps, ad hoc or unknown"
+    },
+    {
+      "name": "Initial",
+      "min": 0.9,
+      "max": 1.9,
+      "color": "#f59e0b",
+      "description": "Basic compliance, foundational elements"
+    },
+    {
+      "name": "Defined",
+      "min": 1.9,
+      "max": 2.9,
+      "color": "#3b82f6",
+      "description": "Documented processes, structured approach"
+    },
+    {
+      "name": "Managed",
+      "min": 2.9,
+      "max": 3.6,
+      "color": "#10b981",
+      "description": "Independent operations, verified compliance"
+    },
+    {
+      "name": "Optimised",
+      "min": 3.6,
+      "max": 5,
+      "color": "#059669",
+      "description": "Transaction-ready, DD packs prepared"
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "financial",
+      "name": "Financial",
+      "weight": 1,
+      "critical": true,
+      "minAcceptable": 2,
+      "questions": [
+        {
+          "id": "f1",
+          "text": "How is accounting managed?",
+          "explanations": [
+            "No formal bookkeeping; records are incomplete or missing.",
+            "Basic bookkeeping exists but accounts are unaudited and may have gaps.",
+            "Accounts are prepared regularly; audited accounts available for recent years.",
+            "Audited accounts current; all statutory filings up to date; records audit-ready.",
+            "Full audit trail; potentially vendor DD pack prepared; all financial records immediately accessible."
+          ]
+        },
+        {
+          "id": "f2",
+          "text": "How robust are management accounts and financial reporting?",
+          "explanations": [
+            "No regular management accounts; financial visibility is minimal.",
+            "Ad hoc management reports produced; limited detail on P&L and balance sheet.",
+            "Monthly management accounts produced; clear P&L and balance sheet reporting.",
+            "Comprehensive monthly reporting with variance analysis and forecasts.",
+            "Real-time financial dashboards; integrated planning and scenario modeling."
+          ]
+        },
+        {
+          "id": "f3",
+          "text": "Is EBITDA and profitability measured, normalised, and documented for review?",
+          "explanations": [
+            "EBITDA not calculated or understood; profitability unclear.",
+            "EBITDA calculated informally; adjustments not documented.",
+            "EBITDA normalised with documented adjustments for one-offs and owner costs.",
+            "Normalised EBITDA defensible with detailed add-back schedule; auditor reviewed.",
+            "Quality of earnings analysis complete; EBITDA bridge prepared for buyers."
+          ]
+        },
+        {
+          "id": "f4",
+          "text": "How is revenue recognized and are policies compliant with accounting standards?",
+          "explanations": [
+            "Revenue recognition is ad hoc or inconsistent; no clear policies.",
+            "Basic revenue recognition applied; not fully compliant with standards.",
+            "Revenue policies documented and consistent with accounting standards.",
+            "Revenue recognition fully compliant; policies reviewed by auditors annually.",
+            "Revenue recognition sophisticated (multi-element, subscriptions); fully disclosed."
+          ]
+        },
+        {
+          "id": "f5",
+          "text": "Are Working capital requirements understood and optimised with clear processes?",
+          "explanations": [
+            "Working capital not monitored; cash flow often unpredictable.",
+            "Basic tracking of debtors/creditors; working capital requirements unclear.",
+            "Working capital understood; debtors, creditors, stock managed with clear processes.",
+            "Working capital optimised; forecasting models in place; cash conversion tracked.",
+            "Working capital locked-box ready; daily visibility; optimised for transaction."
+          ]
+        },
+        {
+          "id": "f6",
+          "text": "Is tax compliance current with filings, clearances, and liabilities documented?",
+          "explanations": [
+            "Tax compliance uncertain; filings may be overdue or incomplete.",
+            "Tax returns filed but not all clearances obtained; liabilities may exist.",
+            "Tax compliance current; major clearances obtained; liabilities quantified.",
+            "All tax clearances current; no disputes; comprehensive tax DD pack prepared.",
+            "Proactive tax planning; clearances pre-obtained; no material tax risk."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "legal",
+      "name": "Legal & Corporate",
+      "weight": 1,
+      "critical": true,
+      "minAcceptable": 2,
+      "questions": [
+        {
+          "id": "l1",
+          "text": "Is corporate structure clear with clean ownership, updated registers, and filed returns?",
+          "explanations": [
+            "Corporate structure unclear; registers out of date; filings overdue.",
+            "Basic structure understood; some registers updated; filings mostly current.",
+            "Clean corporate structure; registers complete; all filings current.",
+            "Corporate structure optimised for exit; all documentation audit-ready.",
+            "Full legal DD pack prepared; corporate structure verified by external counsel."
+          ]
+        },
+        {
+          "id": "l2",
+          "text": "Are statutory books complete with board minutes, resolutions, and governance documentation?",
+          "explanations": [
+            "Statutory books incomplete; board minutes missing or not maintained.",
+            "Some statutory records exist but gaps in board minutes and resolutions.",
+            "Statutory books substantially complete with regular board minutes.",
+            "All statutory books current; comprehensive governance documentation in place.",
+            "Institutional-grade statutory records; legal VDD confirms completeness."
+          ]
+        },
+        {
+          "id": "l3",
+          "text": "Are material contracts identified, documented, and assignable?",
+          "explanations": [
+            "Material contracts not identified or documented; terms unclear.",
+            "Some contracts documented but not comprehensive; assignability unknown.",
+            "Material contracts identified and documented; assignability reviewed.",
+            "All material contracts cataloged with assignability confirmed; change of control reviewed.",
+            "Full contracts schedule in legal DD pack; all consents obtained or waived."
+          ]
+        },
+        {
+          "id": "l4",
+          "text": "Is Intellectual Property owned by the company with clear chain of title and registrations?",
+          "explanations": [
+            "IP ownership unclear; no registrations or assignments documented.",
+            "Some IP documented but chain of title unclear; employee assignments missing.",
+            "Core IP owned by company; registrations current; employee assignments in place.",
+            "All IP ownership verified; full chain of title documented; no infringement risk.",
+            "IP DD pack complete; freedom to operate confirmed; all rights assigned to company."
+          ]
+        },
+        {
+          "id": "l5",
+          "text": "Is property and asset ownership documented with leases, licenses, and equipment properly recorded?",
+          "explanations": [
+            "Property and assets undocumented; leases or licenses may be missing.",
+            "Some property records exist but incomplete; lease terms not fully understood.",
+            "Property and assets documented; leases and equipment schedules current.",
+            "All property rights confirmed; leases assignable; asset register complete.",
+            "Full property DD pack; all consents obtained; no title or lease issues."
+          ]
+        },
+        {
+          "id": "l6",
+          "text": "Are litigation and disputes resolved or quantified?",
+          "explanations": [
+            "Litigation risk unknown; disputes or claims may be undisclosed.",
+            "Some litigation known but not all resolved or quantified.",
+            "Material litigation resolved or quantified; no undisclosed claims.",
+            "No material litigation; all disputes resolved; comprehensive legal clearance.",
+            "Full litigation clearance confirmed by external counsel; W&I insurance viable."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "commercial",
+      "name": "Commercial",
+      "weight": 1,
+      "questions": [
+        {
+          "id": "c1",
+          "text": "How diversified is the customer base?",
+          "explanations": [
+            "High customer concentration; top customer >30% of revenue.",
+            "Top customer 20-30% of revenue; concentration risk recognised.",
+            "Top customer <20% of revenue; diversified customer base.",
+            "Top customer <15% of revenue; well-diversified across multiple customers.",
+            "Highly diversified; no customer >10% of revenue; low concentration risk."
+          ]
+        },
+        {
+          "id": "c2",
+          "text": "How predictable is revenue?",
+          "explanations": [
+            "Revenue is project-based or one-off; minimal predictability.",
+            "Some repeat customers but revenue not contracted or recurring.",
+            "Recurring or repeat revenue model; some contracted revenue.",
+            "Majority of revenue recurring or contracted; high predictability.",
+            "Subscription or long-term contracts; revenue highly predictable and growing."
+          ]
+        },
+        {
+          "id": "c3",
+          "text": "How well are customer retention and churn tracked?",
+          "explanations": [
+            "Customer retention not tracked; churn unknown.",
+            "Some customer tracking but retention and churn not measured consistently.",
+            "Retention and churn tracked; evidence of loyalty and repeat business.",
+            "Low churn (<15%); retention metrics tracked; customer lifetime value understood.",
+            "Excellent retention (<10% churn); high LTV; evidence of customer advocacy."
+          ]
+        },
+        {
+          "id": "c4",
+          "text": "Are sales pipeline and funnel managed?",
+          "explanations": [
+            "No sales pipeline; future revenue visibility is minimal.",
+            "Ad hoc sales tracking; pipeline exists but not systematically managed.",
+            "Sales pipeline and funnel managed; visibility of future opportunities.",
+            "CRM system in place; pipeline coverage >3x quota; conversion rates tracked.",
+            "Sophisticated sales forecasting; pipeline analytics; predictive revenue modeling."
+          ]
+        },
+        {
+          "id": "c5",
+          "text": "Are market position and competitive advantage understood and defensible?",
+          "explanations": [
+            "Market position unclear; competitive advantage not articulated.",
+            "Some understanding of market but competitive position not well defined.",
+            "Market position understood; competitive advantage identified and documented.",
+            "Strong market position evidenced; differentiation clear; sustainable competitive advantage.",
+            "Market leader or clear niche dominance; competitive moat defensible and growing."
+          ]
+        },
+        {
+          "id": "c6",
+          "text": "Is customer satisfaction measured?",
+          "explanations": [
+            "Customer satisfaction not measured; feedback is anecdotal.",
+            "Some customer feedback collected but not systematically measured.",
+            "Customer satisfaction tracked; NPS or similar metric measured.",
+            "High customer satisfaction (NPS >30); strong relationships evidenced.",
+            "Excellent NPS (>50); customer references and case studies prepared; advocacy program."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "operational",
+      "name": "Operational",
+      "weight": 1,
+      "questions": [
+        {
+          "id": "o1",
+          "text": "Are business processes documented?",
+          "explanations": [
+            "Core processes undocumented; tribal knowledge; high founder dependency.",
+            "Some processes documented but inconsistent; significant founder involvement required.",
+            "Core processes documented in SOPs; business can operate with reduced founder input.",
+            "All processes documented and followed; minimal founder dependency in daily operations.",
+            "Fully systematised operations; founder can step back; processes optimised for scale."
+          ]
+        },
+        {
+          "id": "o2",
+          "text": "Is IT infrastructure resilient with disaster recovery and business continuity plans?",
+          "explanations": [
+            "IT systems ad hoc; no disaster recovery or business continuity planning.",
+            "Basic IT systems; some backups but no tested DR plan.",
+            "IT infrastructure documented; backups automated; basic DR plan in place.",
+            "Comprehensive IT documentation; DR plan tested annually; business continuity confirmed.",
+            "Institutional-grade IT; cloud-native; automated failover; full operational resilience."
+          ]
+        },
+        {
+          "id": "o3",
+          "text": "Is supply chain managed with key suppliers identified and contingency plans in place?",
+          "explanations": [
+            "Supply chain undocumented; single-source dependencies; no contingency.",
+            "Some supplier documentation but dependencies not managed; contingency unclear.",
+            "Key suppliers identified; some dual-sourcing; basic supplier management.",
+            "Supply chain documented; dual-sourcing for critical inputs; supplier contracts current.",
+            "Optimised supply chain; supplier risk managed; full contingency planning; SRM programme."
+          ]
+        },
+        {
+          "id": "o4",
+          "text": "Are operational KPIs tracked?",
+          "explanations": [
+            "Operational KPIs not tracked; performance visibility is minimal.",
+            "Some metrics tracked informally; no systematic reporting.",
+            "Key operational metrics tracked; regular reporting to management.",
+            "Comprehensive KPI dashboards; metrics aligned to business goals; benchmarked.",
+            "Real-time operational analytics; predictive insights; continuous improvement culture."
+          ]
+        },
+        {
+          "id": "o5",
+          "text": "Is quality management implemented formally?",
+          "explanations": [
+            "Quality management is informal; no systematic QA processes.",
+            "Basic quality checks but no formal QA system; issues often reactive.",
+            "Quality management processes documented; regular QA reviews.",
+            "Formal QA/QC program; ISO9001 or equivalent; systematic quality tracking.",
+            "Continuous quality improvement; Six Sigma or Lean; quality excellence embedded."
+          ]
+        },
+        {
+          "id": "o6",
+          "text": "How scalable are operations to support growth?",
+          "explanations": [
+            "Growth capacity unclear; scalability not demonstrated.",
+            "Some capacity for growth but constraints not identified or planned for.",
+            "Growth capacity understood; infrastructure can support 2x revenue growth.",
+            "Scalability demonstrated; systems and processes can support 3-5x growth.",
+            "Highly scalable platform; growth capacity >5x; infrastructure investment-ready."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "people",
+      "name": "People & Organisation",
+      "weight": 1,
+      "critical": true,
+      "minAcceptable": 2,
+      "questions": [
+        {
+          "id": "p1",
+          "text": "Are employment contracts in place?",
+          "explanations": [
+            "No employment contracts or contracts missing key terms.",
+            "Basic employment contracts in place but some gaps or inconsistencies.",
+            "All employees have proper contracts; terms compliant with employment law.",
+            "Comprehensive employment contracts; reviewed by legal; fully compliant.",
+            "Institutional-grade employment documentation; all contracts audit-ready."
+          ]
+        },
+        {
+          "id": "p2",
+          "text": "Is the organisation structure defined with clear roles and responsibilities?",
+          "explanations": [
+            "Org structure unclear; roles and reporting lines undefined.",
+            "Basic org chart exists but roles not well defined; some ambiguity.",
+            "Org structure documented; roles and responsibilities clear.",
+            "Comprehensive org chart; role clarity; succession planning for key roles.",
+            "Sophisticated org design; talent development plans; leadership pipeline."
+          ]
+        },
+        {
+          "id": "p3",
+          "text": "How reliant is the business on key individuals?",
+          "explanations": [
+            "High key person risk; business depends on founder or 1-2 individuals.",
+            "Some key person dependency managed but significant risk remains.",
+            "Key person risk identified; retention plans and succession in place.",
+            "Low key person risk; management depth; team can operate without founder.",
+            "No key person risk; institutional management team; succession plans for all roles."
+          ]
+        },
+        {
+          "id": "p4",
+          "text": "Are HR policies and procedures documented and communicated?",
+          "explanations": [
+            "No HR policies; employee handbook does not exist.",
+            "Basic HR policies exist but not comprehensive or consistently applied.",
+            "Employee handbook and HR policies documented and communicated.",
+            "Comprehensive HR policies; performance reviews; compensation framework.",
+            "Institutional-grade HR; full policy suite; regular reviews; benchmarked compensation."
+          ]
+        },
+        {
+          "id": "p5",
+          "text": "How is staff retention managed?",
+          "explanations": [
+            "High turnover or flight risk not identified; retention uncertain.",
+            "Some turnover tracking but retention risks not systematically managed.",
+            "Turnover tracked; retention plans for key employees; low voluntary attrition.",
+            "Low turnover (<15%); retention incentives in place; employee satisfaction high.",
+            "Excellent retention (<10%); LTIP or equity plans; culture of loyalty and engagement."
+          ]
+        },
+        {
+          "id": "p6",
+          "text": "How is staff training and development managed?",
+          "explanations": [
+            "Training and development is ad hoc; skills gaps not identified.",
+            "Some training provided but not systematic; development plans informal.",
+            "Training programs in place; skills development tracked.",
+            "Comprehensive L&D program; skills framework; training aligned to business needs.",
+            "Continuous learning culture; leadership development; high engagement in training."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "esg",
+      "name": "ESG & Risk",
+      "weight": 1,
+      "questions": [
+        {
+          "id": "e1",
+          "text": "Is Health and Safety understood and managed?",
+          "explanations": [
+            "H&S compliance uncertain; no risk assessments or incident reporting.",
+            "Basic H&S awareness but not systematic; some policies exist.",
+            "H&S risk assessments current; policies documented; incidents tracked.",
+            "Comprehensive H&S program; regular audits; training current; low incident rate.",
+            "H&S excellence; certifications (ISO45001); zero harm culture; proactive risk management."
+          ]
+        },
+        {
+          "id": "e2",
+          "text": "How is data protection (GDPR/privacy) compliance managed?",
+          "explanations": [
+            "GDPR/data protection compliance uncertain; no privacy policy or data mapping.",
+            "Basic data protection awareness but gaps in compliance; policies incomplete.",
+            "GDPR baseline compliance; privacy policy in place; data mapping complete.",
+            "Strong data protection; DPO appointed (if required); DPIA process; regular reviews.",
+            "Privacy by design; ISO27001 or equivalent; full data governance; privacy-enhancing tech."
+          ]
+        },
+        {
+          "id": "e3",
+          "text": "Are cyber security controls implemented?",
+          "explanations": [
+            "Cyber security is minimal; no systematic controls or monitoring.",
+            "Basic cyber security (firewalls, AV) but no systematic risk management.",
+            "Cyber security controls in place; penetration testing; incident response plan.",
+            "Comprehensive cyber security program; SOC or managed security; regular testing.",
+            "Institutional-grade security; ISO27001; threat intelligence; continuous monitoring."
+          ]
+        },
+        {
+          "id": "e4",
+          "text": "Is environmental impact managed?",
+          "explanations": [
+            "Environmental impact unknown; no environmental policies.",
+            "Some environmental awareness but no systematic management.",
+            "Environmental policies documented; basic compliance with regulations.",
+            "Environmental management system (ISO14001 or equivalent); impact measured and reduced.",
+            "Environmental excellence; carbon neutral or net zero commitment; ESG reporting."
+          ]
+        },
+        {
+          "id": "e5",
+          "text": "Is risk management formalised with a risk register and mitigation plans?",
+          "explanations": [
+            "Risk management is reactive; no risk register or systematic process.",
+            "Some risks identified informally but not systematically managed.",
+            "Risk register maintained; key risks identified and mitigated.",
+            "Comprehensive risk framework; risks reviewed regularly; board oversight.",
+            "Enterprise risk management; quantitative risk modeling; integrated into strategy."
+          ]
+        },
+        {
+          "id": "e6",
+          "text": "Is insurance coverage appropriate for business risks?",
+          "explanations": [
+            "Business insurance is minimal or gaps exist; coverage uncertain.",
+            "Basic insurance (liability, property) but coverage gaps may exist.",
+            "Appropriate insurance coverage; key risks insured; policies current.",
+            "Comprehensive insurance; D&O, professional indemnity, cyber; limits appropriate.",
+            "Institutional-grade insurance; W&I insurance viable; all material risks covered."
+          ]
+        }
+      ]
+    }
+  ],
+  "benchmarks": {
+    "sectors": [
+      {
+        "id": "technology",
+        "name": "Technology/SaaS",
+        "description": "Software, SaaS, technology services, and digital platforms",
+        "criticalDomains": ["legal", "operational"],
+        "lifecyclePhases": {
+          "preRevenue": {
+            "name": "Pre-Revenue/Early Stage",
+            "description": "Seed to Series A, typically <£1m revenue",
+            "minimum": {
+              "financial": 2.0,
+              "legal": 2.0,
+              "commercial": 2.0,
+              "operational": 2.0,
+              "people": 2.0,
+              "esg": 1.0
+            },
+            "average": {
+              "financial": 2.5,
+              "legal": 2.5,
+              "commercial": 2.5,
+              "operational": 2.5,
+              "people": 2.5,
+              "esg": 2.0
+            }
+          },
+          "fiveM": {
+            "name": "£5m Valuation",
+            "description": "Growth stage, established revenue, scaling operations",
+            "minimum": {
+              "financial": 3.0,
+              "legal": 3.0,
+              "commercial": 2.0,
+              "operational": 3.0,
+              "people": 2.0,
+              "esg": 2.0
+            },
+            "average": {
+              "financial": 3.5,
+              "legal": 3.5,
+              "commercial": 3.0,
+              "operational": 3.5,
+              "people": 3.0,
+              "esg": 2.5
+            }
+          },
+          "thirtyM": {
+            "name": "£30m Valuation",
+            "description": "Scale-up stage, institutional investment ready",
+            "minimum": {
+              "financial": 4.0,
+              "legal": 4.0,
+              "commercial": 3.0,
+              "operational": 4.0,
+              "people": 3.0,
+              "esg": 3.0
+            },
+            "average": {
+              "financial": 4.0,
+              "legal": 4.0,
+              "commercial": 3.5,
+              "operational": 4.0,
+              "people": 3.5,
+              "esg": 3.5
+            }
+          }
+        }
+      },
+      {
+        "id": "healthcare",
+        "name": "Healthcare",
+        "description": "Medical services, care homes, clinical services, health tech",
+        "criticalDomains": ["esg", "people"],
+        "lifecyclePhases": {
+          "preRevenue": {
+            "name": "Pre-Revenue/Early Stage",
+            "description": "New healthcare service or facility, pre-CQC or early registration",
+            "minimum": {
+              "financial": 2.0,
+              "legal": 2.0,
+              "commercial": 2.0,
+              "operational": 2.0,
+              "people": 2.0,
+              "esg": 2.0
+            },
+            "average": {
+              "financial": 2.5,
+              "legal": 2.5,
+              "commercial": 2.5,
+              "operational": 2.5,
+              "people": 2.5,
+              "esg": 2.5
+            }
+          },
+          "fiveM": {
+            "name": "£5m Valuation",
+            "description": "Established healthcare provider with CQC rating",
+            "minimum": {
+              "financial": 2.0,
+              "legal": 3.0,
+              "commercial": 2.0,
+              "operational": 2.0,
+              "people": 3.0,
+              "esg": 3.0
+            },
+            "average": {
+              "financial": 3.0,
+              "legal": 3.5,
+              "commercial": 3.0,
+              "operational": 3.0,
+              "people": 3.5,
+              "esg": 3.5
+            }
+          },
+          "thirtyM": {
+            "name": "£30m Valuation",
+            "description": "Multi-site healthcare group, institutional grade",
+            "minimum": {
+              "financial": 3.0,
+              "legal": 4.0,
+              "commercial": 3.0,
+              "operational": 3.0,
+              "people": 4.0,
+              "esg": 4.0
+            },
+            "average": {
+              "financial": 3.5,
+              "legal": 4.0,
+              "commercial": 3.5,
+              "operational": 3.5,
+              "people": 4.0,
+              "esg": 4.0
+            }
+          }
+        }
+      },
+      {
+        "id": "professional",
+        "name": "Professional Services",
+        "description": "Consulting, accounting, legal, marketing, recruitment, and advisory services",
+        "criticalDomains": ["commercial", "people"],
+        "lifecyclePhases": {
+          "preRevenue": {
+            "name": "Pre-Revenue/Early Stage",
+            "description": "Start-up consultancy or professional practice",
+            "minimum": {
+              "financial": 1.0,
+              "legal": 1.0,
+              "commercial": 2.0,
+              "operational": 1.0,
+              "people": 2.0,
+              "esg": 1.0
+            },
+            "average": {
+              "financial": 2.0,
+              "legal": 2.0,
+              "commercial": 2.5,
+              "operational": 2.0,
+              "people": 2.5,
+              "esg": 1.5
+            }
+          },
+          "fiveM": {
+            "name": "£5m Valuation",
+            "description": "Established practice with recurring client base",
+            "minimum": {
+              "financial": 2.0,
+              "legal": 2.0,
+              "commercial": 3.0,
+              "operational": 2.0,
+              "people": 3.0,
+              "esg": 1.0
+            },
+            "average": {
+              "financial": 2.5,
+              "legal": 2.5,
+              "commercial": 3.5,
+              "operational": 2.5,
+              "people": 3.5,
+              "esg": 2.0
+            }
+          },
+          "thirtyM": {
+            "name": "£30m Valuation",
+            "description": "Multi-office professional services firm",
+            "minimum": {
+              "financial": 3.0,
+              "legal": 3.0,
+              "commercial": 4.0,
+              "operational": 2.0,
+              "people": 4.0,
+              "esg": 2.0
+            },
+            "average": {
+              "financial": 3.5,
+              "legal": 3.5,
+              "commercial": 4.0,
+              "operational": 3.0,
+              "people": 4.0,
+              "esg": 2.5
+            }
+          }
+        }
+      },
+      {
+        "id": "manufacturing",
+        "name": "Manufacturing",
+        "description": "Product manufacturing, assembly, and production operations",
+        "criticalDomains": ["operational", "esg"],
+        "lifecyclePhases": {
+          "preRevenue": {
+            "name": "Pre-Revenue/Early Stage",
+            "description": "Start-up manufacturing or product development stage",
+            "minimum": {
+              "financial": 1.0,
+              "legal": 1.0,
+              "commercial": 1.0,
+              "operational": 2.0,
+              "people": 1.0,
+              "esg": 2.0
+            },
+            "average": {
+              "financial": 2.0,
+              "legal": 2.0,
+              "commercial": 2.0,
+              "operational": 2.5,
+              "people": 2.0,
+              "esg": 2.5
+            }
+          },
+          "fiveM": {
+            "name": "£5m Valuation",
+            "description": "Established manufacturer with production facilities",
+            "minimum": {
+              "financial": 2.0,
+              "legal": 2.0,
+              "commercial": 2.0,
+              "operational": 3.0,
+              "people": 2.0,
+              "esg": 3.0
+            },
+            "average": {
+              "financial": 2.5,
+              "legal": 2.5,
+              "commercial": 2.5,
+              "operational": 3.5,
+              "people": 2.5,
+              "esg": 3.5
+            }
+          },
+          "thirtyM": {
+            "name": "£30m Valuation",
+            "description": "Multi-site manufacturing group with ISO certification",
+            "minimum": {
+              "financial": 3.0,
+              "legal": 3.0,
+              "commercial": 3.0,
+              "operational": 4.0,
+              "people": 2.0,
+              "esg": 4.0
+            },
+            "average": {
+              "financial": 3.5,
+              "legal": 3.5,
+              "commercial": 3.5,
+              "operational": 4.0,
+              "people": 3.0,
+              "esg": 4.0
+            }
+          }
+        }
+      },
+      {
+        "id": "construction",
+        "name": "Construction/Engineering",
+        "description": "Building, civil engineering, trades, and construction services",
+        "criticalDomains": ["financial", "esg"],
+        "lifecyclePhases": {
+          "preRevenue": {
+            "name": "Pre-Revenue/Early Stage",
+            "description": "New construction firm or specialist trade contractor",
+            "minimum": {
+              "financial": 1.0,
+              "legal": 1.0,
+              "commercial": 1.0,
+              "operational": 1.0,
+              "people": 1.0,
+              "esg": 1.0
+            },
+            "average": {
+              "financial": 1.5,
+              "legal": 1.5,
+              "commercial": 1.5,
+              "operational": 1.5,
+              "people": 1.5,
+              "esg": 1.5
+            }
+          },
+          "fiveM": {
+            "name": "£5m Valuation",
+            "description": "Established contractor with order book",
+            "minimum": {
+              "financial": 2.0,
+              "legal": 2.0,
+              "commercial": 2.0,
+              "operational": 2.0,
+              "people": 2.0,
+              "esg": 2.0
+            },
+            "average": {
+              "financial": 2.5,
+              "legal": 2.5,
+              "commercial": 2.5,
+              "operational": 2.5,
+              "people": 2.5,
+              "esg": 2.5
+            }
+          },
+          "thirtyM": {
+            "name": "£30m Valuation",
+            "description": "Regional contractor or specialist engineering firm",
+            "minimum": {
+              "financial": 3.0,
+              "legal": 2.0,
+              "commercial": 3.0,
+              "operational": 2.0,
+              "people": 2.0,
+              "esg": 3.0
+            },
+            "average": {
+              "financial": 3.5,
+              "legal": 3.0,
+              "commercial": 3.5,
+              "operational": 3.0,
+              "people": 3.0,
+              "esg": 3.5
+            }
+          }
+        }
+      },
+      {
+        "id": "retail",
+        "name": "Retail/Hospitality",
+        "description": "Retail stores, restaurants, hotels, leisure, and hospitality services",
+        "criticalDomains": ["legal", "financial"],
+        "lifecyclePhases": {
+          "preRevenue": {
+            "name": "Pre-Revenue/Early Stage",
+            "description": "New retail concept or hospitality venue",
+            "minimum": {
+              "financial": 1.0,
+              "legal": 1.0,
+              "commercial": 1.0,
+              "operational": 1.0,
+              "people": 1.0,
+              "esg": 1.0
+            },
+            "average": {
+              "financial": 1.5,
+              "legal": 1.5,
+              "commercial": 1.5,
+              "operational": 1.5,
+              "people": 1.5,
+              "esg": 1.5
+            }
+          },
+          "fiveM": {
+            "name": "£5m Valuation",
+            "description": "Multi-site retail or hospitality operation",
+            "minimum": {
+              "financial": 2.0,
+              "legal": 2.0,
+              "commercial": 2.0,
+              "operational": 2.0,
+              "people": 1.0,
+              "esg": 1.0
+            },
+            "average": {
+              "financial": 2.5,
+              "legal": 2.5,
+              "commercial": 2.5,
+              "operational": 2.5,
+              "people": 2.0,
+              "esg": 2.0
+            }
+          },
+          "thirtyM": {
+            "name": "£30m Valuation",
+            "description": "Regional chain or hospitality group",
+            "minimum": {
+              "financial": 3.0,
+              "legal": 3.0,
+              "commercial": 2.0,
+              "operational": 2.0,
+              "people": 2.0,
+              "esg": 2.0
+            },
+            "average": {
+              "financial": 3.5,
+              "legal": 3.5,
+              "commercial": 3.0,
+              "operational": 3.0,
+              "people": 2.5,
+              "esg": 2.5
+            }
+          }
+        }
+      }
+    ],
+    "lifecyclePhases": [
+      {
+        "id": "preRevenue",
+        "name": "Pre-Revenue/Early Stage",
+        "description": "Seed to Series A, typically <£1m revenue",
+        "valuationRange": "£0-3M"
+      },
+      {
+        "id": "fiveM",
+        "name": "£5m Valuation",
+        "description": "Growth stage, established revenue, scaling operations",
+        "valuationRange": "£3-8M"
+      },
+      {
+        "id": "thirtyM",
+        "name": "£30m Valuation",
+        "description": "Scale-up stage, institutional investment ready",
+        "valuationRange": "£8M+"
+      }
+    ]
+  }
+}
