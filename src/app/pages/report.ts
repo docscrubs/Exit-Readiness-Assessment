@@ -8,6 +8,8 @@ import { AssessmentSpec, Responses } from '../models/assessment';
 import { RadarComponent } from '../components/radar';
 import { ValuationInputs, ValuationResult, getDefaultValuationInputs } from '../models/valuation';
 import { ValuationService } from '../services/valuation.service';
+import { MagiliumImpactService } from '../services/magilium-impact.service';
+import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '../models/magilium-impact';
 
 @Component({
   selector: 'app-report-page',
@@ -228,6 +230,160 @@ import { ValuationService } from '../services/valuation.service';
                   <ul *ngIf="valuationResult()?.caveats && valuationResult()!.caveats.length > 1" class="mt-2 list-disc pl-4 space-y-1">
                     <li *ngFor="let caveat of valuationResult()?.caveats?.slice(1)">{{ caveat }}</li>
                   </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional Exit Preparation Impact Section (Magilium) -->
+        <div *ngIf="magiliumImpact() as impact" class="rounded-xl border-2 border-purple-200 mb-6 overflow-hidden shadow-sm bg-gradient-to-br from-purple-50 via-white to-pink-50">
+          <!-- Collapsible Header -->
+          <button
+            type="button"
+            (click)="toggleMagiliumSection()"
+            class="w-full p-5 flex items-center justify-between text-left hover:bg-purple-50/50 transition-colors">
+            <div class="flex items-center gap-3">
+              <svg class="w-5 h-5 text-purple-600 transition-transform" [class.rotate-90]="magiliumSectionExpanded()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+              <span class="font-semibold text-slate-900">See how professional preparation can improve your exit outcome in value, timescale and chance of completion here</span>
+            </div>
+          </button>
+
+          <!-- Expanded Content -->
+          <div *ngIf="magiliumSectionExpanded()" class="px-6 pb-6">
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+              <!-- Valuation Improvement Card -->
+              <div class="bg-white rounded-lg p-5 border-2 border-green-200 shadow-sm">
+                <div class="text-xs uppercase tracking-wide text-green-600 mb-1 flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                  Valuation Improvement
+                </div>
+                <div class="text-2xl font-bold text-slate-900">
+                  +{{ impact.valuationImpact.improvementPercent }}%
+                </div>
+                <div class="text-xs text-slate-500 mt-1">
+                  Potential discount reduction
+                </div>
+                <div *ngIf="impact.valuationImpact.estimatedValueGain" class="mt-2 pt-2 border-t border-slate-100 text-xs text-green-700 font-medium">
+                  Est. {{ valuationSvc.formatCurrency(impact.valuationImpact.estimatedValueGain) }} value gain
+                </div>
+              </div>
+
+              <!-- Completion Probability Card -->
+              <div class="bg-white rounded-lg p-5 border-2 border-blue-200 shadow-sm">
+                <div class="text-xs uppercase tracking-wide text-blue-600 mb-1 flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Deal Completion
+                </div>
+                <div class="text-2xl font-bold text-slate-900">
+                  {{ impact.completionImpact.currentProbability }}% → {{ impact.completionImpact.mitigatedProbability }}%
+                </div>
+                <div class="text-xs text-slate-500 mt-1">
+                  Probability of successful close
+                </div>
+                <div *ngIf="impact.completionImpact.riskFactorCount > 0" class="mt-2 pt-2 border-t border-slate-100 text-xs text-orange-600">
+                  {{ impact.completionImpact.riskFactorCount }} risk factor{{ impact.completionImpact.riskFactorCount > 1 ? 's' : '' }} identified
+                </div>
+              </div>
+
+              <!-- Timeline Card -->
+              <div class="bg-white rounded-lg p-5 border-2 border-purple-200 shadow-sm">
+                <div class="text-xs uppercase tracking-wide text-purple-600 mb-1 flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  DD Timeline
+                </div>
+                <div class="text-2xl font-bold text-slate-900">
+                  {{ impact.timelineImpact.ddTimeSavings }}
+                </div>
+                <div class="text-xs text-slate-500 mt-1">
+                  Faster due diligence
+                </div>
+                <div class="mt-2 pt-2 border-t border-slate-100 text-xs text-slate-600">
+                  {{ impact.timelineImpact.explanation }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Specific Opportunities -->
+            <div *ngIf="impact.opportunities.length > 0" class="mb-6">
+              <h4 class="font-semibold text-slate-900 mb-3">Your Specific Opportunities</h4>
+              <div class="space-y-3">
+                <div *ngFor="let opp of impact.opportunities" class="bg-white rounded-lg p-4 border border-slate-200">
+                  <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0 mt-0.5">
+                      <span *ngIf="opp.category === 'valuation'" class="text-lg">📊</span>
+                      <span *ngIf="opp.category === 'documentation'" class="text-lg">📁</span>
+                      <span *ngIf="opp.category === 'completion'" class="text-lg">✅</span>
+                      <span *ngIf="opp.category === 'timeline'" class="text-lg">⏱️</span>
+                    </div>
+                    <div class="flex-1">
+                      <div class="font-medium text-slate-900">{{ opp.title }}</div>
+                      <div class="mt-1 text-sm text-slate-600">
+                        <span class="text-red-600">{{ opp.currentState }}</span>
+                        <span class="mx-2">→</span>
+                        <span class="text-green-600">{{ opp.mitigatedState }}</span>
+                      </div>
+                      <div class="mt-2 text-sm text-slate-700">
+                        <strong>How:</strong> {{ opp.magiliumApproach }}
+                      </div>
+                      <div class="mt-2 text-xs text-slate-500">
+                        Source: <a [href]="opp.evidenceUrl" target="_blank" class="text-blue-600 hover:underline">{{ opp.evidenceSource }}</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Evidence Sources (collapsible) -->
+            <div class="mb-6">
+              <button
+                type="button"
+                (click)="toggleMagiliumEvidence()"
+                class="text-sm text-slate-700 hover:text-slate-900 flex items-center gap-1 font-medium transition-colors">
+                <svg class="w-4 h-4 transition-transform" [class.rotate-180]="magiliumEvidenceExpanded()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+                View evidence sources
+              </button>
+              <div *ngIf="magiliumEvidenceExpanded()" class="mt-3 p-4 bg-white rounded-lg border border-slate-200">
+                <ul class="space-y-2 text-sm text-slate-700">
+                  <li *ngFor="let stat of magiliumStatistics()" class="flex items-start gap-2">
+                    <span class="font-semibold text-purple-700">{{ stat.value }}</span>
+                    <span>{{ stat.label }}</span>
+                    <a [href]="stat.sourceUrl" target="_blank" class="text-blue-600 hover:underline text-xs">({{ stat.source }})</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- CTA Bar -->
+            <div class="rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                  <h4 class="font-semibold text-lg">Ready to maximise your exit value?</h4>
+                  <p class="text-purple-100 text-sm mt-1">
+                    Magilium Ltd prepares SMEs for successful exits, typically 6-12 months before transaction.
+                  </p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                  <a href="mailto:connect&#64;magilium.com"
+                     class="px-6 py-3 bg-white text-purple-700 rounded-lg font-semibold text-center hover:bg-purple-50 transition-colors shadow-sm">
+                    Email Us
+                  </a>
+                  <a href="https://www.magilium.com" target="_blank"
+                     class="px-6 py-3 border-2 border-white text-white rounded-lg font-semibold text-center hover:bg-white/10 transition-colors">
+                    Visit Website →
+                  </a>
                 </div>
               </div>
             </div>
@@ -549,6 +705,7 @@ export class ReportPageComponent implements OnInit {
   private svc = inject(AssessmentService);
   recSvc = inject(RecommendationService);
   valuationSvc = inject(ValuationService);
+  magiliumSvc = inject(MagiliumImpactService);
   router = inject(Router);
 
   spec = signal<AssessmentSpec | null>(null);
@@ -561,6 +718,10 @@ export class ReportPageComponent implements OnInit {
   valuationInputs = signal<ValuationInputs | null>(null);
   methodologySectionExpanded = signal(false);
 
+  // Magilium impact section signals
+  magiliumSectionExpanded = signal(false);
+  magiliumEvidenceExpanded = signal(false);
+
   valuationResult = computed<ValuationResult | null>(() => {
     const inputs = this.valuationInputs();
     if (!inputs) return null;
@@ -570,6 +731,49 @@ export class ReportPageComponent implements OnInit {
   toggleMethodologySection() {
     this.methodologySectionExpanded.update((v) => !v);
   }
+
+  toggleMagiliumSection() {
+    this.magiliumSectionExpanded.update((v) => !v);
+  }
+
+  toggleMagiliumEvidence() {
+    this.magiliumEvidenceExpanded.update((v) => !v);
+  }
+
+  // Magilium impact computed signal
+  magiliumImpact = computed<MagiliumImpactSummary | null>(() => {
+    const spec = this.spec();
+    const resp = this.responses();
+    if (!spec || !resp) return null;
+
+    // Build domain averages
+    const domainAverages = spec.dimensions.map((d) => ({
+      id: d.id,
+      name: d.name,
+      avg: this.dimScore(d.id),
+    }));
+
+    // Get threshold violations
+    const thresholdViolations = this.recSvc.detectThresholdViolations(spec, resp);
+
+    // Count domains below minimum benchmark
+    const comparison = this.benchmarkComparison();
+    const belowMinimumCount = comparison
+      ? comparison.gaps.filter((g) => g.belowMinimum).length
+      : 0;
+
+    return this.magiliumSvc.calculateImpact(
+      domainAverages,
+      thresholdViolations,
+      this.valuationResult(),
+      this.valuationInputs(),
+      belowMinimumCount
+    );
+  });
+
+  magiliumStatistics = computed<MagiliumStatistic[]>(() => {
+    return this.magiliumSvc.getStatistics();
+  });
 
   // Computed signals for exit readiness features
   thresholdViolations = computed(() =>
