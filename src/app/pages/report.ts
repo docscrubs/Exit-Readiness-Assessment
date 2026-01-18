@@ -1,16 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AssessmentService } from '../services/assessment.service';
 import { RecommendationService } from '../services/recommendation.service';
 import { AssessmentSpec, Responses } from '../models/assessment';
 import { RadarComponent } from '../components/radar';
+import { ValuationInputs, ValuationResult, getDefaultValuationInputs } from '../models/valuation';
+import { ValuationService } from '../services/valuation.service';
 
 @Component({
   selector: 'app-report-page',
   standalone: true,
-  imports: [CommonModule, RadarComponent, FormsModule],
+  imports: [CommonModule, RadarComponent, FormsModule, RouterLink],
   template: `
     <section class="container mx-auto px-6 py-10 lg:py-12 print:px-0 print:py-0">
       <div class="mb-6 flex items-start justify-between gap-6">
@@ -80,6 +82,158 @@ import { RadarComponent } from '../components/radar';
       </div>
 -->
       <ng-container *ngIf="spec() as s">
+
+        <!-- Indicative Valuation Section -->
+        <div class="rounded-xl border-2 mb-6 overflow-hidden shadow-sm"
+             [ngClass]="{
+               'border-green-300 bg-gradient-to-br from-green-50 via-emerald-50 to-white': valuationResult()?.isCalculable,
+               'border-slate-200 bg-slate-50': !valuationResult()?.isCalculable
+             }">
+          <div class="p-6">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div>
+                <h3 class="font-semibold text-slate-900 text-lg flex items-center gap-2">
+                  <svg class="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Indicative Valuation Range
+                </h3>
+                <p class="text-sm text-slate-600 mt-1">
+                  {{ valuationResult()?.isCalculable ? 'Based on your financial inputs' : 'Add financial data to receive a valuation estimate' }}
+                </p>
+              </div>
+              <div *ngIf="valuationResult()?.isCalculable" class="flex-shrink-0">
+                <span class="text-xs px-3 py-1.5 rounded-full font-medium shadow-sm"
+                      [ngClass]="{
+                        'bg-green-100 text-green-700 border border-green-200': valuationResult()?.confidence === 'high',
+                        'bg-yellow-100 text-yellow-700 border border-yellow-200': valuationResult()?.confidence === 'medium',
+                        'bg-orange-100 text-orange-700 border border-orange-200': valuationResult()?.confidence === 'low'
+                      }">
+                  {{ valuationResult()?.confidence === 'high' ? 'High' : valuationResult()?.confidence === 'medium' ? 'Medium' : 'Low' }} Confidence
+                </span>
+              </div>
+            </div>
+
+            <!-- Calculable valuation display -->
+            <div *ngIf="valuationResult()?.isCalculable" class="mt-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Enterprise Value -->
+                <div class="bg-white rounded-lg p-5 border border-green-200 shadow-sm">
+                  <div class="text-xs uppercase tracking-wide text-slate-500 mb-1 flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                    Enterprise Value
+                  </div>
+                  <div class="text-2xl font-bold text-slate-900">
+                    {{ valuationSvc.formatCurrency(valuationResult()?.enterpriseValueMin ?? null) }} – {{ valuationSvc.formatCurrency(valuationResult()?.enterpriseValueMax ?? null) }}
+                  </div>
+                  <div class="text-xs text-slate-500 mt-2 pt-2 border-t border-slate-100">
+                    {{ valuationResult()?.baseValueLabel }}: {{ valuationSvc.formatCurrency(valuationResult()?.baseValue ?? null) }}
+                    × {{ valuationResult()?.multipleMin }}–{{ valuationResult()?.multipleMax }}x
+                  </div>
+                </div>
+
+                <!-- Equity Value -->
+                <div class="bg-gradient-to-br from-purple-50 to-white rounded-lg p-5 border border-purple-200 shadow-sm">
+                  <div class="text-xs uppercase tracking-wide text-purple-600 mb-1 flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    Equity Value (What You Receive)
+                  </div>
+                  <div class="text-2xl font-bold text-purple-900">
+                    {{ valuationSvc.formatCurrency(valuationResult()?.equityValueMin ?? null) }} – {{ valuationSvc.formatCurrency(valuationResult()?.equityValueMax ?? null) }}
+                  </div>
+                  <div class="text-xs text-slate-500 mt-2 pt-2 border-t border-purple-100">
+                    After deducting {{ valuationSvc.formatCurrency(valuationInputs()?.totalDebt ?? 0) }} in liabilities
+                  </div>
+                </div>
+              </div>
+
+              <!-- Adjustments applied -->
+              <div *ngIf="valuationResult()?.adjustments && valuationResult()!.adjustments.length > 0" class="mt-4 p-3 bg-white rounded-lg border border-slate-200">
+                <div class="text-xs font-medium text-slate-600 mb-2 flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                  </svg>
+                  Adjustments Applied:
+                </div>
+                <div class="flex flex-wrap gap-2">
+                  <span *ngFor="let adj of valuationResult()?.adjustments"
+                        class="text-xs px-2.5 py-1 rounded-full font-medium cursor-help transition-all hover:shadow-sm"
+                        [ngClass]="{
+                          'bg-green-100 text-green-700 border border-green-200': adj.impact === 'premium',
+                          'bg-red-100 text-red-700 border border-red-200': adj.impact === 'discount',
+                          'bg-slate-100 text-slate-600 border border-slate-200': adj.impact === 'neutral'
+                        }"
+                        [title]="adj.explanation">
+                    {{ adj.factor }}: {{ adj.percentageChange > 0 ? '+' : '' }}{{ adj.percentageChange }}%
+                  </span>
+                </div>
+              </div>
+
+              <!-- How is this calculated? collapsible -->
+              <div class="mt-4">
+                <button
+                  type="button"
+                  (click)="toggleMethodologySection()"
+                  class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1 font-medium transition-colors">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  How is this calculated?
+                  <svg class="w-4 h-4 transition-transform" [class.rotate-180]="methodologySectionExpanded()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                <div *ngIf="methodologySectionExpanded()" class="mt-3 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg text-sm text-slate-700">
+                  <p class="mb-2">This valuation uses the <strong>{{ valuationResult()?.method === 'ebitda-multiple' ? 'EBITDA Multiple' : 'Revenue Multiple' }}</strong> method:</p>
+                  <ul class="list-disc pl-5 space-y-1">
+                    <li *ngIf="valuationResult()?.method === 'ebitda-multiple'">Enterprise Value = Normalised EBITDA × Industry Multiple</li>
+                    <li *ngIf="valuationResult()?.method === 'revenue-multiple'">Enterprise Value = Annual Turnover × Revenue Multiple</li>
+                    <li>Base multiples adjusted for business characteristics (customer concentration, recurring revenue, growth)</li>
+                    <li>Equity Value = Enterprise Value minus Total Debt</li>
+                  </ul>
+                  <p class="mt-3">
+                    <a routerLink="/methodology" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium transition-colors">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      View full methodology document with sources →
+                    </a>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- No valuation data message -->
+            <div *ngIf="!valuationResult()?.isCalculable" class="mt-6 text-center py-8">
+              <svg class="w-16 h-16 mx-auto mb-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              <p class="text-slate-600 mb-2 font-medium">No valuation data provided</p>
+              <p class="text-sm text-slate-500 max-w-md mx-auto">Return to the assessment and complete the optional financial data section to receive an indicative valuation range.</p>
+            </div>
+
+            <!-- Caveats (always shown when calculable) -->
+            <div *ngIf="valuationResult()?.isCalculable" class="mt-4 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg">
+              <div class="flex gap-3">
+                <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <div class="text-xs text-amber-800">
+                  <strong class="text-amber-900">Important:</strong> This is an indicative estimate only, not a professional valuation.
+                  Actual transaction values depend on market conditions, buyer synergies, deal structure, negotiation, and comprehensive due diligence.
+                  <ul *ngIf="valuationResult()?.caveats && valuationResult()!.caveats.length > 1" class="mt-2 list-disc pl-4 space-y-1">
+                    <li *ngFor="let caveat of valuationResult()?.caveats?.slice(1)">{{ caveat }}</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="rounded-xl border border-slate-200 bg-white p-6 mb-6">
           <div class="flex flex-col md:flex-row md:items-start items-center gap-6">
             <!-- Radar (left on wide screens) -->
@@ -394,6 +548,7 @@ import { RadarComponent } from '../components/radar';
 export class ReportPageComponent implements OnInit {
   private svc = inject(AssessmentService);
   recSvc = inject(RecommendationService);
+  valuationSvc = inject(ValuationService);
   router = inject(Router);
 
   spec = signal<AssessmentSpec | null>(null);
@@ -401,6 +556,20 @@ export class ReportPageComponent implements OnInit {
 
   primaryColor = '#3f1954';
   accentColor = '#ed0776';
+
+  // Valuation signals
+  valuationInputs = signal<ValuationInputs | null>(null);
+  methodologySectionExpanded = signal(false);
+
+  valuationResult = computed<ValuationResult | null>(() => {
+    const inputs = this.valuationInputs();
+    if (!inputs) return null;
+    return this.valuationSvc.calculateValuation(inputs);
+  });
+
+  toggleMethodologySection() {
+    this.methodologySectionExpanded.update((v) => !v);
+  }
 
   // Computed signals for exit readiness features
   thresholdViolations = computed(() =>
@@ -476,11 +645,64 @@ export class ReportPageComponent implements OnInit {
       acc = acc * BigInt(sectors.length + 1) + BigInt(sectorValue);
       acc = acc * BigInt(phases.length + 1) + BigInt(lifecycleValue);
 
+      // Encode valuation data
+      const valuation = this.valuationInputs() ?? getDefaultValuationInputs();
+      // Version byte (1 = includes valuation data)
+      acc = acc * 2n + 1n;
+
+      // Business type: 0=none, 1=service, 2=product, 3=tech-saas
+      const btMap: Record<string, number> = { service: 1, product: 2, 'tech-saas': 3 };
+      const btValue = valuation.businessType ? (btMap[valuation.businessType] ?? 0) : 0;
+      acc = acc * 4n + BigInt(btValue);
+
+      // Encode financial data (scaled to thousands, max 100M = 100000 in thousands)
+      // Historical financials (3 years)
+      for (const year of valuation.historicalFinancials) {
+        const turnover = this.encodeFinancialValue(year.turnover);
+        const ebitda = this.encodeFinancialValue(year.ebitda);
+        acc = acc * 100001n + BigInt(turnover);
+        acc = acc * 200001n + BigInt(ebitda + 100000); // Offset to handle negative EBITDA
+      }
+
+      // Forecast financials (3 years)
+      for (const year of valuation.forecastFinancials) {
+        const turnover = this.encodeFinancialValue(year.turnover);
+        const ebitda = this.encodeFinancialValue(year.ebitda);
+        acc = acc * 100001n + BigInt(turnover);
+        acc = acc * 200001n + BigInt(ebitda + 100000);
+      }
+
+      // Total debt (scaled)
+      const debt = this.encodeFinancialValue(valuation.totalDebt);
+      acc = acc * 100001n + BigInt(debt);
+
+      // Growth trend: 0=none, 1=declining, 2=flat, 3=growing
+      const gtMap: Record<string, number> = { declining: 1, flat: 2, growing: 3 };
+      const gtValue = valuation.growthTrend ? (gtMap[valuation.growthTrend] ?? 0) : 0;
+      acc = acc * 4n + BigInt(gtValue);
+
+      // Customer concentration: 0=none, 1=high, 2=medium, 3=low
+      const ccMap: Record<string, number> = { high: 1, medium: 2, low: 3 };
+      const ccValue = valuation.customerConcentration ? (ccMap[valuation.customerConcentration] ?? 0) : 0;
+      acc = acc * 4n + BigInt(ccValue);
+
+      // Recurring revenue: 0=not set, 1-101 = 0-100%
+      const rrValue = valuation.recurringRevenuePercentage !== null ? valuation.recurringRevenuePercentage + 1 : 0;
+      acc = acc * 102n + BigInt(rrValue);
+
       const obf = acc * this.CODE_MUL + this.CODE_OFF;
       const checksum = Number(obf % 36n);
       const main = this.bigIntToBase36(obf);
       return (main + checksum.toString(36)).toUpperCase();
     } catch (e) { return ''; }
+  }
+
+  // Encode financial value: scale to thousands, cap at 100M
+  private encodeFinancialValue(value: number | null): number {
+    if (value === null || value === undefined) return 0;
+    // Scale to thousands and cap
+    const scaled = Math.round(value / 1000);
+    return Math.max(0, Math.min(100000, scaled));
   }
 
   private bigIntToBase36(n: bigint) {
@@ -518,6 +740,17 @@ export class ReportPageComponent implements OnInit {
         const savedLifecycle = localStorage.getItem('exit-readiness:selectedLifecycle');
         if (savedSector) this.selectedSector.set(savedSector);
         if (savedLifecycle) this.selectedLifecycle.set(savedLifecycle);
+      } catch (e) { /* ignore */ }
+
+      // load valuation inputs
+      try {
+        const valuationRaw = localStorage.getItem('exit-readiness:valuationInputs');
+        if (valuationRaw) {
+          const parsed = JSON.parse(valuationRaw) as ValuationInputs;
+          if (parsed && typeof parsed === 'object') {
+            this.valuationInputs.set(parsed);
+          }
+        }
       } catch (e) { /* ignore */ }
 
       // clear guard so route can't be reused unintentionally

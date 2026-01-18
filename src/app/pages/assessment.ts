@@ -6,6 +6,17 @@ import { AssessmentLevel, AssessmentSpec, Responses } from '../models/assessment
 import { AssessmentService } from '../services/assessment.service';
 import { RadarComponent } from '../components/radar';
 import { RecommendationService } from '../services/recommendation.service';
+import {
+  BusinessType,
+  CustomerConcentration,
+  GrowthTrend,
+  ValuationInputs,
+  getDefaultValuationInputs,
+  BUSINESS_TYPE_LABELS,
+  GROWTH_TREND_LABELS,
+  CUSTOMER_CONCENTRATION_LABELS,
+} from '../models/valuation';
+import { ValuationService } from '../services/valuation.service';
 
 @Component({
   selector: 'app-assessment-page',
@@ -71,6 +82,249 @@ import { RecommendationService } from '../services/recommendation.service';
                 <option value="">-- Select a stage --</option>
                 <option *ngFor="let phase of availableLifecyclePhases()" [value]="phase.id">{{ phase.name }} ({{ phase.valuationRange }})</option>
               </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Valuation Data Section (Optional, Collapsible) -->
+        <div class="mt-6 rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+          <!-- Collapsed Header (clickable) -->
+          <button
+            type="button"
+            (click)="toggleValuationSection()"
+            class="w-full p-6 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
+            [ngClass]="{'bg-gradient-to-r from-purple-50 to-white': valuationSectionExpanded()}">
+            <div class="flex-1">
+              <div class="flex items-center gap-2">
+                <h3 class="font-semibold text-slate-900">Financial Data for Valuation</h3>
+                <span class="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-medium">Optional</span>
+              </div>
+              <p class="text-sm text-slate-600 mt-1">
+                {{ valuationSectionExpanded() ? 'Provide financial data to receive an indicative valuation range in your report.' : 'Complete this section to receive an indicative valuation range in your report.' }}
+              </p>
+            </div>
+            <svg
+              class="w-5 h-5 text-purple-600 transition-transform flex-shrink-0 ml-4"
+              [class.rotate-180]="valuationSectionExpanded()"
+              fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <!-- Expanded Content -->
+          <div *ngIf="valuationSectionExpanded()" class="px-6 pb-6 border-t border-purple-100">
+            <!-- Info Banner -->
+            <div class="mt-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
+              <div class="flex items-start gap-3">
+                <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="text-sm text-blue-800">
+                  These inputs are <strong>optional</strong>. Without them, your assessment will still provide exit readiness insights, but no valuation estimate will be shown.
+                  All values should be in GBP (£). You can enter either EBITDA or Profit figures - they will be treated equivalently.
+                </p>
+              </div>
+            </div>
+
+            <!-- Business Type Selection -->
+            <div class="mt-6">
+              <label class="block text-sm font-medium text-slate-700 mb-3">Type of Business</label>
+              <p class="text-xs text-slate-500 mb-3">This determines the base valuation multiple range (separate from your sector selection above).</p>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <button
+                  type="button"
+                  *ngFor="let bt of businessTypes; let btIdx = index"
+                  [tabIndex]="100 + btIdx"
+                  (click)="setBusinessType(bt.value)"
+                  (keydown.enter)="setBusinessType(bt.value)"
+                  (keydown.space)="setBusinessType(bt.value); $event.preventDefault()"
+                  class="px-4 py-3 rounded-lg border-2 text-sm font-medium transition-all focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                  [ngClass]="{
+                    'border-purple-600 bg-purple-50 text-purple-700 shadow-sm': valuationInputs().businessType === bt.value,
+                    'border-slate-200 bg-white text-slate-700 hover:border-purple-300 hover:bg-purple-50/50': valuationInputs().businessType !== bt.value
+                  }">
+                  {{ bt.label }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Historical Financials -->
+            <div class="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
+              <h4 class="text-sm font-semibold text-slate-800 mb-2 flex items-center gap-2">
+                <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Historical Financials (Completed Years)
+              </h4>
+              <p class="text-xs text-slate-500 mb-4">Enter data for completed financial years. Leave blank if not available.</p>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div *ngFor="let yearData of valuationInputs().historicalFinancials; let i = index" class="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
+                  <div class="text-xs font-semibold text-slate-700 text-center py-1 bg-slate-100 rounded">{{ getHistoricalYear(i) }}</div>
+                  <div>
+                    <label class="block text-xs text-slate-500 mb-1">Turnover (£)</label>
+                    <input
+                      type="text"
+                      inputmode="numeric"
+                      placeholder="e.g., 1,500,000"
+                      [tabIndex]="110 + (i * 2)"
+                      [value]="formatNumberForDisplay(yearData.turnover)"
+                      (blur)="setHistoricalTurnover(i, $event)"
+                      (keydown.enter)="focusNextInput($event)"
+                      class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors" />
+                  </div>
+                  <div>
+                    <label class="block text-xs text-slate-500 mb-1">EBITDA/Profit (£)</label>
+                    <input
+                      type="text"
+                      inputmode="numeric"
+                      placeholder="e.g., 300,000"
+                      [tabIndex]="111 + (i * 2)"
+                      [value]="formatNumberForDisplay(yearData.ebitda)"
+                      (blur)="setHistoricalEbitda(i, $event)"
+                      (keydown.enter)="focusNextInput($event)"
+                      class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                      [ngClass]="getEbitdaValidationClass(i, 'historical')" />
+                    <div *ngIf="getValidationError(i, 'historical')" class="mt-1 text-xs text-red-600 flex items-center gap-1">
+                      <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                      {{ getValidationError(i, 'historical') }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Forecast Financials -->
+            <div class="mt-4 p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border border-green-200">
+              <h4 class="text-sm font-semibold text-slate-800 mb-2 flex items-center gap-2">
+                <svg class="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                Forecast Financials (Current &amp; Future Years)
+              </h4>
+              <p class="text-xs text-slate-500 mb-4">Enter your projections. Include current year if not yet complete.</p>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div *ngFor="let yearData of valuationInputs().forecastFinancials; let i = index" class="bg-white p-3 rounded-lg border border-green-200 space-y-2">
+                  <div class="text-xs font-semibold text-green-700 text-center py-1 bg-green-100 rounded">{{ getForecastYear(i) }}{{ i === 0 ? ' (Current)' : '' }}</div>
+                  <div>
+                    <label class="block text-xs text-slate-500 mb-1">Turnover (£)</label>
+                    <input
+                      type="text"
+                      inputmode="numeric"
+                      placeholder="e.g., 2,000,000"
+                      [tabIndex]="120 + (i * 2)"
+                      [value]="formatNumberForDisplay(yearData.turnover)"
+                      (blur)="setForecastTurnover(i, $event)"
+                      (keydown.enter)="focusNextInput($event)"
+                      class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors" />
+                  </div>
+                  <div>
+                    <label class="block text-xs text-slate-500 mb-1">EBITDA/Profit (£)</label>
+                    <input
+                      type="text"
+                      inputmode="numeric"
+                      placeholder="e.g., 400,000"
+                      [tabIndex]="121 + (i * 2)"
+                      [value]="formatNumberForDisplay(yearData.ebitda)"
+                      (blur)="setForecastEbitda(i, $event)"
+                      (keydown.enter)="focusNextInput($event)"
+                      class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                      [ngClass]="getEbitdaValidationClass(i, 'forecast')" />
+                    <div *ngIf="getValidationError(i, 'forecast')" class="mt-1 text-xs text-red-600 flex items-center gap-1">
+                      <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                      {{ getValidationError(i, 'forecast') }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Debt/Liabilities -->
+            <div class="mt-6">
+              <label class="block text-sm font-medium text-slate-700 mb-2">Total Debt/Liabilities (£)</label>
+              <p class="text-xs text-slate-500 mb-2">Include all loans, overdrafts, and finance leases. Used to convert Enterprise Value to Equity Value.</p>
+              <input
+                type="text"
+                inputmode="numeric"
+                placeholder="e.g., 250,000"
+                [tabIndex]="130"
+                [value]="formatNumberForDisplay(valuationInputs().totalDebt)"
+                (blur)="setTotalDebt($event)"
+                (keydown.enter)="focusNextInput($event)"
+                class="w-full max-w-xs px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors" />
+            </div>
+
+            <!-- Optional Adjustments -->
+            <div class="mt-6 pt-6 border-t border-slate-200">
+              <h4 class="text-sm font-semibold text-slate-800 mb-2 flex items-center gap-2">
+                <svg class="w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                </svg>
+                Optional Adjustments
+                <span class="font-normal text-slate-400">(for more accurate estimate)</span>
+              </h4>
+              <p class="text-xs text-slate-500 mb-4">These factors affect the valuation multiple applied.</p>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Growth Trend -->
+                <div class="bg-white p-3 rounded-lg border border-slate-200">
+                  <label class="block text-xs font-medium text-slate-600 mb-2">Growth Trend</label>
+                  <select
+                    [tabIndex]="140"
+                    [value]="valuationInputs().growthTrend ?? ''"
+                    (change)="setGrowthTrend($event)"
+                    class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors">
+                    <option value="">-- Select --</option>
+                    <option value="declining">Declining</option>
+                    <option value="flat">Flat</option>
+                    <option value="growing">Growing</option>
+                  </select>
+                </div>
+
+                <!-- Customer Concentration -->
+                <div class="bg-white p-3 rounded-lg border border-slate-200">
+                  <label class="block text-xs font-medium text-slate-600 mb-2">Customer Concentration</label>
+                  <select
+                    [tabIndex]="141"
+                    [value]="valuationInputs().customerConcentration ?? ''"
+                    (change)="setCustomerConcentration($event)"
+                    class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors">
+                    <option value="">-- Select --</option>
+                    <option value="high">High (&gt;40% one customer)</option>
+                    <option value="medium">Medium (20-40%)</option>
+                    <option value="low">Low/Diversified (&lt;20%)</option>
+                  </select>
+                </div>
+
+                <!-- Recurring Revenue -->
+                <div class="bg-white p-3 rounded-lg border border-slate-200">
+                  <label class="block text-xs font-medium text-slate-600 mb-2">Recurring Revenue (%)</label>
+                  <input
+                    type="number"
+                    inputmode="numeric"
+                    min="0"
+                    max="100"
+                    placeholder="e.g., 60"
+                    [tabIndex]="142"
+                    [value]="valuationInputs().recurringRevenuePercentage ?? ''"
+                    (blur)="setRecurringRevenue($event)"
+                    (keydown.enter)="focusNextInput($event)"
+                    class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Clear Valuation Data Button -->
+            <div class="mt-6 pt-4 border-t border-slate-100 flex justify-end">
+              <button
+                type="button"
+                [tabIndex]="150"
+                (click)="clearValuationInputs()"
+                class="text-sm text-slate-500 hover:text-red-600 transition-colors flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Clear all valuation data
+              </button>
             </div>
           </div>
         </div>
@@ -183,6 +437,7 @@ export class AssessmentPageComponent implements OnInit {
   private svc = inject(AssessmentService);
   private router = inject(Router);
   private recSvc = inject(RecommendationService);
+  private valuationSvc = inject(ValuationService);
 
   spec = signal<AssessmentSpec | null>(null);
   responses = signal<Responses>({});
@@ -198,6 +453,17 @@ export class AssessmentPageComponent implements OnInit {
   // Sector and lifecycle selections for encoding in export code
   selectedSector = signal<string>('');
   selectedLifecycle = signal<string>('');
+
+  // Valuation input signals
+  valuationSectionExpanded = signal(false);
+  valuationInputs = signal<ValuationInputs>(getDefaultValuationInputs());
+
+  // Business type options for UI
+  businessTypes: { value: BusinessType; label: string }[] = [
+    { value: 'service', label: 'Service Business' },
+    { value: 'product', label: 'Product Business' },
+    { value: 'tech-saas', label: 'Tech/SaaS' },
+  ];
 
   availableSectors = computed(() => {
     const spec = this.spec();
@@ -254,12 +520,71 @@ export class AssessmentPageComponent implements OnInit {
     acc = acc * BigInt(sectors.length + 1) + BigInt(sectorValue);
     acc = acc * BigInt(phases.length + 1) + BigInt(lifecycleValue);
 
+    // Encode valuation data
+    const valuation = this.valuationInputs();
+    // Version byte (1 = includes valuation data)
+    acc = acc * 2n + 1n;
+
+    // Business type: 0=none, 1=service, 2=product, 3=tech-saas
+    const btMap: Record<string, number> = { service: 1, product: 2, 'tech-saas': 3 };
+    const btValue = valuation.businessType ? (btMap[valuation.businessType] ?? 0) : 0;
+    acc = acc * 4n + BigInt(btValue);
+
+    // Encode financial data (scaled to thousands, max 100M = 100000 in thousands)
+    // Historical financials (3 years)
+    for (const year of valuation.historicalFinancials) {
+      const turnover = this.encodeFinancialValue(year.turnover);
+      const ebitda = this.encodeFinancialValue(year.ebitda);
+      acc = acc * 100001n + BigInt(turnover);
+      acc = acc * 200001n + BigInt(ebitda + 100000); // Offset to handle negative EBITDA
+    }
+
+    // Forecast financials (3 years)
+    for (const year of valuation.forecastFinancials) {
+      const turnover = this.encodeFinancialValue(year.turnover);
+      const ebitda = this.encodeFinancialValue(year.ebitda);
+      acc = acc * 100001n + BigInt(turnover);
+      acc = acc * 200001n + BigInt(ebitda + 100000);
+    }
+
+    // Total debt (scaled)
+    const debt = this.encodeFinancialValue(valuation.totalDebt);
+    acc = acc * 100001n + BigInt(debt);
+
+    // Growth trend: 0=none, 1=declining, 2=flat, 3=growing
+    const gtMap: Record<string, number> = { declining: 1, flat: 2, growing: 3 };
+    const gtValue = valuation.growthTrend ? (gtMap[valuation.growthTrend] ?? 0) : 0;
+    acc = acc * 4n + BigInt(gtValue);
+
+    // Customer concentration: 0=none, 1=high, 2=medium, 3=low
+    const ccMap: Record<string, number> = { high: 1, medium: 2, low: 3 };
+    const ccValue = valuation.customerConcentration ? (ccMap[valuation.customerConcentration] ?? 0) : 0;
+    acc = acc * 4n + BigInt(ccValue);
+
+    // Recurring revenue: 0=not set, 1-101 = 0-100%
+    const rrValue = valuation.recurringRevenuePercentage !== null ? valuation.recurringRevenuePercentage + 1 : 0;
+    acc = acc * 102n + BigInt(rrValue);
+
     // obfuscate
     const obf = acc * this.CODE_MUL + this.CODE_OFF;
     const checksum = Number(obf % 36n);
     const main = this.bigIntToBase36(obf);
     const code = (main + checksum.toString(36)).toUpperCase();
     return code;
+  }
+
+  // Encode financial value: scale to thousands, cap at 100M
+  private encodeFinancialValue(value: number | null): number {
+    if (value === null || value === undefined) return 0;
+    // Scale to thousands and cap
+    const scaled = Math.round(value / 1000);
+    return Math.max(0, Math.min(100000, scaled));
+  }
+
+  // Decode financial value: convert back from thousands
+  private decodeFinancialValue(encoded: number): number | null {
+    if (encoded === 0) return null;
+    return encoded * 1000;
   }
 
   // convert BigInt to base36 string
@@ -298,7 +623,72 @@ export class AssessmentPageComponent implements OnInit {
       const s = this.spec();
       if (!s) { this.showRestoreToast('Spec not loaded'); return; }
 
-      // Decode lifecycle (least significant)
+      // Decode in reverse order (last encoded = first decoded)
+
+      // Recurring revenue
+      const rrValue = Number(acc % 102n);
+      acc = acc / 102n;
+      const recurringRevenuePercentage = rrValue === 0 ? null : rrValue - 1;
+
+      // Customer concentration
+      const ccValue = Number(acc % 4n);
+      acc = acc / 4n;
+      const ccMap: Record<number, CustomerConcentration | null> = { 0: null, 1: 'high', 2: 'medium', 3: 'low' };
+      const customerConcentration = ccMap[ccValue] ?? null;
+
+      // Growth trend
+      const gtValue = Number(acc % 4n);
+      acc = acc / 4n;
+      const gtMap: Record<number, GrowthTrend | null> = { 0: null, 1: 'declining', 2: 'flat', 3: 'growing' };
+      const growthTrend = gtMap[gtValue] ?? null;
+
+      // Total debt
+      const debtEncoded = Number(acc % 100001n);
+      acc = acc / 100001n;
+      const totalDebt = this.decodeFinancialValue(debtEncoded);
+
+      // Forecast financials (3 years, decode in reverse)
+      const forecastFinancials: { year: number; turnover: number | null; ebitda: number | null }[] = [];
+      const currentYear = new Date().getFullYear();
+      for (let i = 2; i >= 0; i--) {
+        const ebitdaEncoded = Number(acc % 200001n) - 100000;
+        acc = acc / 200001n;
+        const turnoverEncoded = Number(acc % 100001n);
+        acc = acc / 100001n;
+        forecastFinancials.unshift({
+          year: currentYear + i,
+          turnover: this.decodeFinancialValue(turnoverEncoded),
+          ebitda: this.decodeFinancialValue(ebitdaEncoded + 100000) !== null
+            ? (ebitdaEncoded * 1000)
+            : null,
+        });
+      }
+
+      // Historical financials (3 years, decode in reverse)
+      const historicalFinancials: { year: number; turnover: number | null; ebitda: number | null }[] = [];
+      for (let i = 0; i < 3; i++) {
+        const ebitdaEncoded = Number(acc % 200001n) - 100000;
+        acc = acc / 200001n;
+        const turnoverEncoded = Number(acc % 100001n);
+        acc = acc / 100001n;
+        historicalFinancials.unshift({
+          year: currentYear - 3 + (2 - i),
+          turnover: this.decodeFinancialValue(turnoverEncoded),
+          ebitda: ebitdaEncoded === -100000 ? null : ebitdaEncoded * 1000,
+        });
+      }
+
+      // Business type
+      const btValue = Number(acc % 4n);
+      acc = acc / 4n;
+      const btMap: Record<number, BusinessType | null> = { 0: null, 1: 'service', 2: 'product', 3: 'tech-saas' };
+      const businessType = btMap[btValue] ?? null;
+
+      // Version byte
+      const version = Number(acc % 2n);
+      acc = acc / 2n;
+
+      // Decode lifecycle (least significant in original encoding)
       const phases = this.availableLifecyclePhases();
       const lifecycleValue = Number(acc % BigInt(phases.length + 1));
       acc = acc / BigInt(phases.length + 1);
@@ -348,6 +738,21 @@ export class AssessmentPageComponent implements OnInit {
         localStorage.removeItem('exit-readiness:selectedLifecycle');
       }
 
+      // Restore valuation inputs if version indicates they were included
+      if (version === 1) {
+        const valuationInputs: ValuationInputs = {
+          businessType,
+          historicalFinancials,
+          forecastFinancials,
+          totalDebt,
+          growthTrend,
+          customerConcentration,
+          recurringRevenuePercentage,
+        };
+        this.valuationInputs.set(valuationInputs);
+        this.saveValuationInputs();
+      }
+
       this.saveResponses();
       this.showRestoreToast('Responses restored');
     } catch (e) {
@@ -368,6 +773,9 @@ export class AssessmentPageComponent implements OnInit {
         if (savedSector) this.selectedSector.set(savedSector);
         if (savedLifecycle) this.selectedLifecycle.set(savedLifecycle);
       } catch (e) { /* ignore */ }
+
+      // Load valuation inputs from localStorage
+      this.loadValuationInputs();
     });
   }
 
@@ -573,5 +981,210 @@ export class AssessmentPageComponent implements OnInit {
         localStorage.removeItem('exit-readiness:selectedLifecycle');
       }
     } catch (e) { /* ignore */ }
+  }
+
+  // ========== Valuation Input Methods ==========
+
+  toggleValuationSection() {
+    this.valuationSectionExpanded.update((v) => !v);
+    try {
+      localStorage.setItem('exit-readiness:valuationExpanded', String(this.valuationSectionExpanded()));
+    } catch (e) { /* ignore */ }
+  }
+
+  setBusinessType(type: BusinessType) {
+    this.valuationInputs.update((inputs) => ({
+      ...inputs,
+      businessType: inputs.businessType === type ? null : type,
+    }));
+    this.saveValuationInputs();
+  }
+
+  setHistoricalTurnover(index: number, event: Event) {
+    const value = this.parseInputValue(event);
+    this.valuationInputs.update((inputs) => {
+      const historicalFinancials = [...inputs.historicalFinancials];
+      historicalFinancials[index] = { ...historicalFinancials[index], turnover: value };
+      return { ...inputs, historicalFinancials };
+    });
+    this.saveValuationInputs();
+  }
+
+  setHistoricalEbitda(index: number, event: Event) {
+    const value = this.parseInputValue(event);
+    this.valuationInputs.update((inputs) => {
+      const historicalFinancials = [...inputs.historicalFinancials];
+      historicalFinancials[index] = { ...historicalFinancials[index], ebitda: value };
+      return { ...inputs, historicalFinancials };
+    });
+    this.saveValuationInputs();
+  }
+
+  setForecastTurnover(index: number, event: Event) {
+    const value = this.parseInputValue(event);
+    this.valuationInputs.update((inputs) => {
+      const forecastFinancials = [...inputs.forecastFinancials];
+      forecastFinancials[index] = { ...forecastFinancials[index], turnover: value };
+      return { ...inputs, forecastFinancials };
+    });
+    this.saveValuationInputs();
+  }
+
+  setForecastEbitda(index: number, event: Event) {
+    const value = this.parseInputValue(event);
+    this.valuationInputs.update((inputs) => {
+      const forecastFinancials = [...inputs.forecastFinancials];
+      forecastFinancials[index] = { ...forecastFinancials[index], ebitda: value };
+      return { ...inputs, forecastFinancials };
+    });
+    this.saveValuationInputs();
+  }
+
+  setTotalDebt(event: Event) {
+    const value = this.parseInputValue(event);
+    this.valuationInputs.update((inputs) => ({ ...inputs, totalDebt: value }));
+    this.saveValuationInputs();
+  }
+
+  setGrowthTrend(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const value = target.value as GrowthTrend | '';
+    this.valuationInputs.update((inputs) => ({
+      ...inputs,
+      growthTrend: value === '' ? null : value,
+    }));
+    this.saveValuationInputs();
+  }
+
+  setCustomerConcentration(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const value = target.value as CustomerConcentration | '';
+    this.valuationInputs.update((inputs) => ({
+      ...inputs,
+      customerConcentration: value === '' ? null : value,
+    }));
+    this.saveValuationInputs();
+  }
+
+  setRecurringRevenue(event: Event) {
+    const target = event.target as HTMLInputElement;
+    const value = target.value ? parseInt(target.value, 10) : null;
+    this.valuationInputs.update((inputs) => ({
+      ...inputs,
+      recurringRevenuePercentage: value !== null && !isNaN(value) ? Math.min(100, Math.max(0, value)) : null,
+    }));
+    this.saveValuationInputs();
+  }
+
+  clearValuationInputs() {
+    this.valuationInputs.set(getDefaultValuationInputs());
+    this.saveValuationInputs();
+  }
+
+  private parseInputValue(event: Event): number | null {
+    const target = event.target as HTMLInputElement;
+    return this.valuationSvc.parseNumber(target.value);
+  }
+
+  formatNumberForDisplay(value: number | null): string {
+    return this.valuationSvc.formatNumber(value);
+  }
+
+  saveValuationInputs() {
+    try {
+      localStorage.setItem('exit-readiness:valuationInputs', JSON.stringify(this.valuationInputs()));
+    } catch (e) { /* ignore */ }
+  }
+
+  loadValuationInputs() {
+    try {
+      const raw = localStorage.getItem('exit-readiness:valuationInputs');
+      if (raw) {
+        const parsed = JSON.parse(raw) as ValuationInputs;
+        // Ensure the structure is valid
+        if (parsed && typeof parsed === 'object') {
+          this.valuationInputs.set(parsed);
+        }
+      }
+      const expanded = localStorage.getItem('exit-readiness:valuationExpanded');
+      if (expanded === 'true') {
+        this.valuationSectionExpanded.set(true);
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  // ========== Dynamic Year Calculation ==========
+
+  private currentYear = new Date().getFullYear();
+
+  getHistoricalYear(index: number): number {
+    // Historical years: currentYear - 3, currentYear - 2, currentYear - 1
+    return this.currentYear - 3 + index;
+  }
+
+  getForecastYear(index: number): number {
+    // Forecast years: currentYear, currentYear + 1, currentYear + 2
+    return this.currentYear + index;
+  }
+
+  // ========== Validation Methods ==========
+
+  getValidationError(index: number, type: 'historical' | 'forecast'): string | null {
+    const inputs = this.valuationInputs();
+    const yearData = type === 'historical'
+      ? inputs.historicalFinancials[index]
+      : inputs.forecastFinancials[index];
+
+    if (!yearData) return null;
+
+    const turnover = yearData.turnover;
+    const ebitda = yearData.ebitda;
+
+    // Validation: EBITDA/Profit should not exceed Turnover
+    if (turnover !== null && ebitda !== null && ebitda > turnover) {
+      return 'Profit cannot exceed turnover';
+    }
+
+    // Validation: Warn if EBITDA margin seems unusually high (> 50%)
+    if (turnover !== null && turnover > 0 && ebitda !== null && ebitda > 0) {
+      const margin = (ebitda / turnover) * 100;
+      if (margin > 50) {
+        return 'Unusually high margin (>50%)';
+      }
+    }
+
+    return null;
+  }
+
+  getEbitdaValidationClass(index: number, type: 'historical' | 'forecast'): Record<string, boolean> {
+    const error = this.getValidationError(index, type);
+    return {
+      'border-slate-300': !error,
+      'border-red-400 bg-red-50': error !== null && error.includes('cannot exceed'),
+      'border-amber-400 bg-amber-50': error !== null && error.includes('Unusually high'),
+    };
+  }
+
+  // ========== Tab Navigation Helper ==========
+
+  focusNextInput(event: Event) {
+    const target = event.target as HTMLElement;
+    const currentTabIndex = target.tabIndex;
+
+    // Find the next focusable element with a higher tabindex
+    const allFocusable = Array.from(
+      document.querySelectorAll<HTMLElement>('input, select, button')
+    ).filter(el => el.tabIndex > 0);
+
+    // Sort by tabindex
+    allFocusable.sort((a, b) => a.tabIndex - b.tabIndex);
+
+    // Find current index and move to next
+    const currentIndex = allFocusable.findIndex(el => el.tabIndex === currentTabIndex);
+    if (currentIndex >= 0 && currentIndex < allFocusable.length - 1) {
+      allFocusable[currentIndex + 1].focus();
+    }
+
+    event.preventDefault();
   }
 }
