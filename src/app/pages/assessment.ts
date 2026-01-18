@@ -134,7 +134,7 @@ import { ValuationService } from '../services/valuation.service';
                 <button
                   type="button"
                   *ngFor="let bt of businessTypes; let btIdx = index"
-                  [tabIndex]="100 + btIdx"
+                  [attr.tabindex]="100 + btIdx"
                   (click)="setBusinessType(bt.value)"
                   (keydown.enter)="setBusinessType(bt.value)"
                   (keydown.space)="setBusinessType(bt.value); $event.preventDefault()"
@@ -166,7 +166,7 @@ import { ValuationService } from '../services/valuation.service';
                       type="text"
                       inputmode="numeric"
                       placeholder="e.g., 1,500,000"
-                      [tabIndex]="110 + (i * 2)"
+                      [attr.tabindex]="110 + i"
                       [value]="formatNumberForDisplay(yearData.turnover)"
                       (blur)="setHistoricalTurnover(i, $event)"
                       (keydown.enter)="focusNextInput($event)"
@@ -178,7 +178,7 @@ import { ValuationService } from '../services/valuation.service';
                       type="text"
                       inputmode="numeric"
                       placeholder="e.g., 300,000"
-                      [tabIndex]="111 + (i * 2)"
+                      [attr.tabindex]="113 + i"
                       [value]="formatNumberForDisplay(yearData.ebitda)"
                       (blur)="setHistoricalEbitda(i, $event)"
                       (keydown.enter)="focusNextInput($event)"
@@ -211,7 +211,7 @@ import { ValuationService } from '../services/valuation.service';
                       type="text"
                       inputmode="numeric"
                       placeholder="e.g., 2,000,000"
-                      [tabIndex]="120 + (i * 2)"
+                      [attr.tabindex]="116 + i"
                       [value]="formatNumberForDisplay(yearData.turnover)"
                       (blur)="setForecastTurnover(i, $event)"
                       (keydown.enter)="focusNextInput($event)"
@@ -223,7 +223,7 @@ import { ValuationService } from '../services/valuation.service';
                       type="text"
                       inputmode="numeric"
                       placeholder="e.g., 400,000"
-                      [tabIndex]="121 + (i * 2)"
+                      [attr.tabindex]="119 + i"
                       [value]="formatNumberForDisplay(yearData.ebitda)"
                       (blur)="setForecastEbitda(i, $event)"
                       (keydown.enter)="focusNextInput($event)"
@@ -246,7 +246,7 @@ import { ValuationService } from '../services/valuation.service';
                 type="text"
                 inputmode="numeric"
                 placeholder="e.g., 250,000"
-                [tabIndex]="130"
+                [attr.tabindex]="122"
                 [value]="formatNumberForDisplay(valuationInputs().totalDebt)"
                 (blur)="setTotalDebt($event)"
                 (keydown.enter)="focusNextInput($event)"
@@ -269,7 +269,7 @@ import { ValuationService } from '../services/valuation.service';
                 <div class="bg-white p-3 rounded-lg border border-slate-200">
                   <label class="block text-xs font-medium text-slate-600 mb-2">Growth Trend</label>
                   <select
-                    [tabIndex]="140"
+                    [attr.tabindex]="123"
                     [value]="valuationInputs().growthTrend ?? ''"
                     (change)="setGrowthTrend($event)"
                     class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors">
@@ -284,7 +284,7 @@ import { ValuationService } from '../services/valuation.service';
                 <div class="bg-white p-3 rounded-lg border border-slate-200">
                   <label class="block text-xs font-medium text-slate-600 mb-2">Customer Concentration</label>
                   <select
-                    [tabIndex]="141"
+                    [attr.tabindex]="124"
                     [value]="valuationInputs().customerConcentration ?? ''"
                     (change)="setCustomerConcentration($event)"
                     class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors">
@@ -304,7 +304,7 @@ import { ValuationService } from '../services/valuation.service';
                     min="0"
                     max="100"
                     placeholder="e.g., 60"
-                    [tabIndex]="142"
+                    [attr.tabindex]="125"
                     [value]="valuationInputs().recurringRevenuePercentage ?? ''"
                     (blur)="setRecurringRevenue($event)"
                     (keydown.enter)="focusNextInput($event)"
@@ -317,7 +317,7 @@ import { ValuationService } from '../services/valuation.service';
             <div class="mt-6 pt-4 border-t border-slate-100 flex justify-end">
               <button
                 type="button"
-                [tabIndex]="150"
+                [attr.tabindex]="126"
                 (click)="clearValuationInputs()"
                 class="text-sm text-slate-500 hover:text-red-600 transition-colors flex items-center gap-1">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
