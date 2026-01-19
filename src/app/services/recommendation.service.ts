@@ -32,7 +32,7 @@ export class RecommendationService {
     { type: 'domain_avg_lt', domainId: 'commercial', threshold: 1, message: 'Commercial: Urgent - implement customer tracking and understand revenue sources.' },
     { type: 'domain_avg_lt', domainId: 'operational', threshold: 1, message: 'Operational: Urgent - document core processes and implement basic IT backups.' },
     { type: 'domain_avg_lt', domainId: 'people', threshold: 1, message: 'People: Urgent - ensure employment contracts are in place and identify key person dependencies.' },
-    { type: 'domain_avg_lt', domainId: 'esg', threshold: 1, message: 'ESG: Urgent - achieve basic H&S and GDPR compliance; document policies.' },
+    { type: 'domain_avg_lt', domainId: 'esg', threshold: 1, message: 'Governance & Risk: Urgent - achieve basic H&S and GDPR compliance; document policies.' },
 
     // Level 1-2: Build towards transaction readiness
     { type: 'domain_avg_between', domainId: 'financial', range: [1, 2], message: 'Financial: Obtain audited accounts, normalise EBITDA, and improve management reporting quality.' },

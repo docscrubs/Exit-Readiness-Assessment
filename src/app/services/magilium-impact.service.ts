@@ -281,9 +281,9 @@ export class MagiliumImpactService {
         url: 'https://hbr.org/',
       },
       esg: {
-        title: 'ESG & Risk Documentation',
+        title: 'Governance & Risk Documentation',
         approach:
-          'Compile compliance documentation, organise H&S records, document data protection compliance, prepare risk register, create ESG narrative.',
+          'Compile compliance documentation, organise H&S records, document data protection compliance, prepare risk register, create governance narrative.',
         source: 'Diligent Institute 2025 Report',
         url: 'https://www.diligent.com/',
       },

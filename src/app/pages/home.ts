@@ -92,7 +92,7 @@ import { RouterLink } from '@angular/router';
         <div class="card">
           <div class="card-icon bg-accent/10 text-accent">2</div>
           <h3 class="card-title">Understand your position</h3>
-          <p class="card-text">Get instant scoring across Financial, Legal & Corporate, Commercial, Operational, People & Organisation, and ESG & Risk. See your current valuation tier (£1-3M, £3-8M, £8-20M, or £20M+), critical threshold violations, and realistic timeline to transaction readiness (months to years).</p>
+          <p class="card-text">Get instant scoring across Financial, Legal & Corporate, Commercial, Operational, People & Organisation, and Governance & Risk. See your current valuation tier (£1-3M, £3-8M, £8-20M, or £20M+), critical threshold violations, and realistic timeline to transaction readiness (months to years).</p>
         </div>
         <div class="card">
           <div class="card-icon bg-emerald-100 text-emerald-600">3</div>

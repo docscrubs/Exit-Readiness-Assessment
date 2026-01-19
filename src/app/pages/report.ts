@@ -617,14 +617,14 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
               <p *ngIf="dimScore('people') >= 3" class="mt-2 text-sm text-slate-700"><strong>Excellent people position.</strong> You have institutional-grade HR and management depth. People DD should be clean. Consider using management quality as a key selling point—buyers pay premiums for strong teams.</p>
             </div>
 
-            <!-- ESG & Risk -->
+            <!-- Governance & Risk -->
             <div class="mt-4">
-              <h4 class="font-semibold text-slate-900">ESG & Risk</h4>
-              <p class="text-sm text-slate-700">ESG and risk management are increasingly important for exit transactions, particularly with PE and larger corporates. H&S incidents, data breaches, or regulatory non-compliance can derail deals or trigger indemnity claims post-close.</p>
+              <h4 class="font-semibold text-slate-900">Governance & Risk</h4>
+              <p class="text-sm text-slate-700">Governance and risk management are increasingly important for exit transactions, particularly with PE and larger corporates. H&S incidents, data breaches, or regulatory non-compliance can derail deals or trigger indemnity claims post-close.</p>
               <p *ngIf="dimScore('esg') < 1" class="mt-2 text-sm text-slate-700"><strong>URGENT:</strong> Level 0 creates deal risk and potential liability. Immediately: (1) achieve basic H&S compliance (risk assessments, incident reporting), (2) ensure GDPR/data protection baseline compliance (privacy policy, data mapping, consent), (3) document policies and training. Expect 12 months to reach baseline. Regulatory issues discovered in DD can kill deals.</p>
               <p *ngIf="dimScore('esg') >= 1 && dimScore('esg') < 2" class="mt-2 text-sm text-slate-700"><strong>Basic compliance in place.</strong> To improve: (1) formalize risk management framework (risk register, mitigation plans), (2) improve H&S and environmental practices (certifications if relevant to industry), (3) strengthen data protection and cyber security (penetration testing, ISO27001 consideration). Target Level 2 within 9-12 months.</p>
-              <p *ngIf="dimScore('esg') >= 2 && dimScore('esg') < 3" class="mt-2 text-sm text-slate-700"><strong>Transaction-ready.</strong> To optimise: (1) achieve relevant certifications (ISO9001, ISO27001, ISO14001), (2) prepare ESG DD pack (policies, training records, incident history), (3) articulate ESG strategy (particularly relevant for PE buyers with ESG mandates). Level 3 is increasingly expected by institutional buyers.</p>
-              <p *ngIf="dimScore('esg') >= 3" class="mt-2 text-sm text-slate-700"><strong>Excellent ESG position.</strong> You meet institutional standards. ESG DD should be clean. PE buyers with ESG mandates will see this as a positive signal. Consider highlighting ESG credentials in investment memorandum.</p>
+              <p *ngIf="dimScore('esg') >= 2 && dimScore('esg') < 3" class="mt-2 text-sm text-slate-700"><strong>Transaction-ready.</strong> To optimise: (1) achieve relevant certifications (ISO9001, ISO27001, ISO14001), (2) prepare governance DD pack (policies, training records, incident history), (3) articulate governance and risk strategy (particularly relevant for PE buyers). Level 3 is increasingly expected by institutional buyers.</p>
+              <p *ngIf="dimScore('esg') >= 3" class="mt-2 text-sm text-slate-700"><strong>Excellent governance position.</strong> You meet institutional standards. Governance DD should be clean. PE buyers will see this as a positive signal. Consider highlighting governance credentials in investment memorandum.</p>
             </div>
 
           </div>

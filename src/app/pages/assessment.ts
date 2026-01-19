@@ -30,7 +30,7 @@ import { ValuationService } from '../services/valuation.service';
           <div class="mt-2 text-slate-600 max-w-prose" >
             Assess your organisation's readiness for exit across 6 critical domains. Each domain is rated 0–4: Incomplete, Initial, Defined, Managed, Optimised. This takes 30-60 minutes and provides instant feedback on gaps, critical thresholds, and timeline to transaction readiness.
             <br />
-            Based on the SME Sale Readiness Framework, covering Financial, Legal & Corporate, Commercial, Operational, People & Organisation, and ESG & Risk.
+            Based on the SME Sale Readiness Framework, covering Financial, Legal & Corporate, Commercial, Operational, People & Organisation, and Governance & Risk.
            <br />
             <span class="font-bold">If you don't understand a question or it doesn't apply, choose 0. You'll receive a code to save and restore your answers anytime.</span>
 
