@@ -283,6 +283,7 @@ export class RecommendationService {
     const domains: Array<keyof DomainScores> = ['financial', 'legal', 'commercial', 'operational', 'people', 'esg'];
     const gaps = domains.map((domain) => ({
       domain,
+      domainName: domainAverages.find((d) => d.id === domain)?.name || domain,
       userScore: userScores[domain],
       minScore: phaseBenchmark.minimum[domain],
       avgScore: phaseBenchmark.average[domain],

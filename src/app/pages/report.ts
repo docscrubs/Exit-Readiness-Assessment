@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AssessmentService } from '../services/assessment.service';
 import { RecommendationService } from '../services/recommendation.service';
@@ -14,7 +14,7 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
 @Component({
   selector: 'app-report-page',
   standalone: true,
-  imports: [CommonModule, RadarComponent, FormsModule, RouterLink],
+  imports: [CommonModule, RadarComponent, FormsModule],
   template: `
     <section class="container mx-auto px-6 py-10 lg:py-12 print:px-0 print:py-0">
       <div class="mb-6 flex items-start justify-between gap-6">
@@ -194,7 +194,7 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
                     <li>Equity Value = Enterprise Value minus Total Debt</li>
                   </ul>
                   <p class="mt-3">
-                    <a routerLink="/methodology" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium transition-colors">
+                    <a href="/methodology" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium transition-colors">
                       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
@@ -478,7 +478,7 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
                     </div>
                     <div class="flex items-center gap-2">
                       <div class="w-4 h-4 rounded-full bg-green-600"></div>
-                      <span><strong>Average benchmark</strong> - competitive position</span>
+                      <span><strong>Competitive benchmark</strong> - premium positioning</span>
                     </div>
                   </div>
                 </div>
@@ -487,7 +487,7 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
                 <div class="space-y-2">
                   <div *ngFor="let gap of comparison.gaps" class="text-xs">
                     <div class="flex items-center justify-between py-2 border-b border-slate-100">
-                      <span class="font-medium text-slate-700 capitalize">{{ gap.domain }}</span>
+                      <span class="font-medium text-slate-700">{{ gap.domainName }}</span>
                       <div class="flex items-center gap-2">
                         <span class="text-slate-600">{{ gap.userScore | number:'1.1-1' }}</span>
                         <span class="text-slate-400">vs</span>
@@ -503,11 +503,11 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
                       </span>
                       <span *ngIf="!gap.belowMinimum && gap.belowAverage" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-50 text-orange-700 text-xs font-medium">
                         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                        Below average - opportunity to improve
+                        Below competitive - opportunity to improve
                       </span>
                       <span *ngIf="!gap.belowMinimum && !gap.belowAverage" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-50 text-green-700 text-xs font-medium">
                         <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
-                        Meets or exceeds average
+                        Meets or exceeds competitive benchmark
                       </span>
                       <span *ngIf="comparison.criticalDomains.includes(gap.domain)" class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 text-xs font-medium">
                         Critical domain for {{ comparison.sectorName }}
@@ -517,7 +517,7 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
                 </div>
 
                 <div class="mt-4 p-3 rounded-lg bg-blue-50 border border-blue-200 text-xs text-slate-700">
-                  <strong>Note:</strong> Minimum benchmarks represent deal requirements based on {{ comparison.sectorName }} M&A data. Average benchmarks indicate competitive positioning for premium valuations.
+                  <strong>Note:</strong> Minimum benchmarks represent deal requirements based on {{ comparison.sectorName }} M&A data. Competitive benchmarks indicate positioning for premium valuations.
                 </div>
               </div>
             </div>

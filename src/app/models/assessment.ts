@@ -95,6 +95,7 @@ export interface BenchmarkComparison {
   averageScores: DomainScores;
   gaps: {
     domain: string;
+    domainName: string;
     userScore: number;
     minScore: number;
     avgScore: number;
