@@ -7,6 +7,7 @@ export interface AssessmentScale {
 export interface AssessmentQuestion {
   id: string;
   text: string;
+  plainSummary?: string;
   explanations?: string[];
 }
 
@@ -27,6 +28,11 @@ export interface AssessmentLevel {
   description?: string;
 }
 
+export interface GlossaryTerm {
+  term: string;
+  definition: string;
+}
+
 export interface AssessmentSpec {
   title: string;
   description?: string;
@@ -35,6 +41,7 @@ export interface AssessmentSpec {
   dimensions: AssessmentDimension[];
   sectorBenchmarks?: SectorBenchmark[];  // Legacy - deprecated
   benchmarks?: BenchmarkData;
+  glossary?: GlossaryTerm[];
 }
 
 export type Responses = Record<string, number>;
