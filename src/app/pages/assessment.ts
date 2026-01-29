@@ -6,6 +6,8 @@ import { AssessmentLevel, AssessmentSpec, Responses } from '../models/assessment
 import { AssessmentService } from '../services/assessment.service';
 import { RadarComponent } from '../components/radar';
 import { RecommendationService } from '../services/recommendation.service';
+import { GlossaryService } from '../services/glossary.service';
+import { GlossaryTextComponent } from '../components/glossary-text.component';
 import {
   BusinessType,
   CustomerConcentration,
@@ -21,7 +23,7 @@ import { ValuationService } from '../services/valuation.service';
 @Component({
   selector: 'app-assessment-page',
   standalone: true,
-  imports: [CommonModule, RouterLink, RadarComponent, FormsModule],
+  imports: [CommonModule, RouterLink, RadarComponent, FormsModule, GlossaryTextComponent],
   template: `
     <section class="container mx-auto px-6 py-10 lg:py-12">
       <div class="mb-8 flex items-start justify-between gap-6">
@@ -67,7 +69,7 @@ import { ValuationService } from '../services/valuation.service';
               <label for="sector-select" class="block text-sm font-medium text-slate-700 mb-2">Select your sector <span class="text-red-600">*</span></label>
               <select
                 id="sector-select"
-                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full px-4 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 [(ngModel)]="sectorModel">
                 <option value="">-- Select a sector --</option>
                 <option *ngFor="let sector of availableSectors()" [value]="sector.id">{{ sector.name }}</option>
@@ -77,10 +79,10 @@ import { ValuationService } from '../services/valuation.service';
               <label for="lifecycle-select" class="block text-sm font-medium text-slate-700 mb-2">Select your lifecycle stage <span class="text-red-600">*</span></label>
               <select
                 id="lifecycle-select"
-                class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full px-4 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 [(ngModel)]="lifecycleModel">
                 <option value="">-- Select a stage --</option>
-                <option *ngFor="let phase of availableLifecyclePhases()" [value]="phase.id">{{ phase.name }} ({{ phase.valuationRange }})</option>
+                <option *ngFor="let phase of availableLifecyclePhases()" [value]="phase.id">{{ phase.name }}</option>
               </select>
             </div>
           </div>
@@ -104,10 +106,10 @@ import { ValuationService } from '../services/valuation.service';
               </p>
             </div>
             <svg
-              class="w-5 h-5 text-purple-600 transition-transform flex-shrink-0 ml-4"
-              [class.rotate-180]="valuationSectionExpanded()"
+              class="w-6 h-6 text-purple-600 transition-transform duration-200 flex-shrink-0 ml-4"
+              [class.rotate-90]="valuationSectionExpanded()"
               fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
           </button>
 
@@ -338,7 +340,8 @@ import { ValuationService } from '../services/valuation.service';
               </div>
               <ol class="space-y-4">
                 <li *ngFor="let q of dim.questions" class="rounded-lg border border-slate-100 bg-slate-50 p-4">
-                  <div class="text-sm text-slate-800">{{ q.text }}</div>
+                  <div class="text-sm text-slate-800 font-medium">{{ q.plainSummary || q.text }}</div>
+                  <div *ngIf="q.plainSummary" class="text-xs text-slate-500 italic mt-1">(<app-glossary-text [text]="q.text"></app-glossary-text>)</div>
                   <div class="mt-3 flex flex-wrap gap-2">
                     <button
                       *ngFor="let v of scaleValues()"
@@ -350,9 +353,8 @@ import { ValuationService } from '../services/valuation.service';
                       {{ v }}
                     </button>
                   </div>
-                  <div class="mt-2 text-xs text-slate-500" *ngIf="responses()[q.id] !== undefined">Selected: {{ labelFor(responses()[q.id]) }}</div>
                   <div class="mt-3 text-sm text-slate-600" *ngIf="responses()[q.id] !== undefined">
-                    <strong>This means:</strong>&nbsp;{{ explanationFor(q.id, responses()[q.id]) }}
+                    <strong>Your level:</strong>&nbsp;<app-glossary-text [text]="explanationFor(q.id, responses()[q.id])"></app-glossary-text>
                   </div>
                 </li>
               </ol>
@@ -395,9 +397,8 @@ import { ValuationService } from '../services/valuation.service';
                 </div>
               </div>
 
-              <div class="mt-4 flex gap-3">
-                <button class="btn btn-primary flex-1" (click)="exportCSV()">Export CSV</button>
-                <button class="btn btn-secondary" (click)="clearResponses()">Clear</button>
+              <div class="mt-4">
+                <button class="btn btn-secondary w-full" (click)="clearResponses()">Clear</button>
               </div>
 
               <button class="btn btn-primary w-full mt-4" [disabled]="answeredCount() < totalCount()" (click)="finalize()">Finalise and view recommendations</button>
@@ -438,6 +439,7 @@ export class AssessmentPageComponent implements OnInit {
   private router = inject(Router);
   private recSvc = inject(RecommendationService);
   private valuationSvc = inject(ValuationService);
+  private glossarySvc = inject(GlossaryService);
 
   spec = signal<AssessmentSpec | null>(null);
   responses = signal<Responses>({});
@@ -763,6 +765,12 @@ export class AssessmentPageComponent implements OnInit {
   ngOnInit(): void {
     this.svc.load().subscribe((spec) => {
       this.spec.set(spec);
+
+      // Initialise glossary service with terms from spec
+      if (spec.glossary) {
+        this.glossarySvc.setGlossary(spec.glossary);
+      }
+
       // Initialize all responses to 0 so every question is selected as 0 by default.
       this.initializeResponsesToZero();
 

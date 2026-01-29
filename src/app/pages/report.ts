@@ -92,7 +92,7 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
               <div>
                 <h3 class="font-semibold text-slate-900 text-lg flex items-center gap-2">
                   <svg class="w-5 h-5 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h2.5a2.5 2.5 0 010 5H14m0-5v5m0-5H9.5a2.5 2.5 0 000 5H14M5 12h14" />
                   </svg>
                   Indicative Valuation Range
                 </h3>
@@ -176,14 +176,11 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
                 <button
                   type="button"
                   (click)="toggleMethodologySection()"
-                  class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1 font-medium transition-colors">
-                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-2 font-medium transition-colors">
+                  <svg class="w-5 h-5 transition-transform duration-200" [class.rotate-90]="methodologySectionExpanded()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                   </svg>
                   How is this calculated?
-                  <svg class="w-4 h-4 transition-transform" [class.rotate-180]="methodologySectionExpanded()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                  </svg>
                 </button>
                 <div *ngIf="methodologySectionExpanded()" class="mt-3 p-4 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-700">
                   <p class="mb-2">This valuation uses the <strong>{{ valuationResult()?.method === 'ebitda-multiple' ? 'EBITDA Multiple' : 'Revenue Multiple' }}</strong> method:</p>
@@ -239,12 +236,10 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
             type="button"
             (click)="toggleMagiliumSection()"
             class="w-full p-5 flex items-center justify-between text-left hover:bg-slate-50 transition-colors">
-            <div class="flex items-center gap-3">
-              <svg class="w-5 h-5 transition-transform" [class.rotate-90]="magiliumSectionExpanded()" [ngClass]="magiliumSectionExpanded() ? 'text-slate-600' : 'text-red-600'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-              </svg>
-              <span class="font-semibold transition-colors" [ngClass]="magiliumSectionExpanded() ? 'text-slate-900' : 'text-red-600 animate-pulse'">See how professional preparation can improve your exit outcome in value, timescale and chance of completion here</span>
-            </div>
+            <span class="font-semibold transition-colors" [ngClass]="magiliumSectionExpanded() ? 'text-slate-900' : 'text-red-600 animate-pulse'">See how professional preparation can improve your exit outcome in value, timescale and chance of completion here</span>
+            <svg class="w-6 h-6 transition-transform duration-200 flex-shrink-0 ml-4" [class.rotate-90]="magiliumSectionExpanded()" [ngClass]="magiliumSectionExpanded() ? 'text-slate-600' : 'text-red-600'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
           </button>
 
           <!-- Expanded Content -->
@@ -252,58 +247,66 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
             <!-- Summary Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <!-- Valuation Improvement Card -->
-              <div class="bg-slate-50 rounded-lg p-5 border border-slate-200">
-                <div class="text-xs uppercase tracking-wide text-slate-500 mb-1 flex items-center gap-1">
+              <div class="bg-slate-50 rounded-lg p-5 border border-slate-200 flex flex-col">
+                <div class="h-6 text-xs uppercase tracking-wide text-slate-500 flex items-center gap-1 mb-2">
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                   </svg>
                   Valuation Improvement
                 </div>
-                <div class="text-2xl font-bold text-slate-900">
-                  +{{ impact.valuationImpact.improvementPercent }}%
+                <div class="h-16">
+                  <div class="text-2xl font-bold text-slate-900">
+                    +{{ impact.valuationImpact.improvementPercent }}%
+                  </div>
                 </div>
-                <div class="text-xs text-slate-500 mt-1">
+                <div class="text-xs text-slate-500">
                   Potential discount reduction
                 </div>
-                <div *ngIf="impact.valuationImpact.estimatedValueGain" class="mt-2 pt-2 border-t border-slate-200 text-xs text-green-700 font-medium">
-                  Est. {{ valuationSvc.formatCurrency(impact.valuationImpact.estimatedValueGain) }} value gain
+                <div class="text-xs text-green-700 font-medium">
+                  <span *ngIf="impact.valuationImpact.estimatedValueGain">Est. {{ valuationSvc.formatCurrency(impact.valuationImpact.estimatedValueGain) }} value gain</span>
+                  <span *ngIf="!impact.valuationImpact.estimatedValueGain" class="text-slate-500">Add financials for estimate</span>
                 </div>
               </div>
 
               <!-- Completion Probability Card -->
-              <div class="bg-slate-50 rounded-lg p-5 border border-slate-200">
-                <div class="text-xs uppercase tracking-wide text-slate-500 mb-1 flex items-center gap-1">
+              <div class="bg-slate-50 rounded-lg p-5 border border-slate-200 flex flex-col">
+                <div class="h-6 text-xs uppercase tracking-wide text-slate-500 flex items-center gap-1 mb-2">
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   Deal Completion
                 </div>
-                <div class="text-2xl font-bold text-slate-900">
-                  {{ impact.completionImpact.currentProbability }}% → {{ impact.completionImpact.mitigatedProbability }}%
+                <div class="h-16">
+                  <div class="text-2xl font-bold text-slate-900">
+                    {{ impact.completionImpact.currentProbability }}% → {{ impact.completionImpact.mitigatedProbability }}%
+                  </div>
                 </div>
-                <div class="text-xs text-slate-500 mt-1">
+                <div class="text-xs text-slate-500">
                   Probability of successful close
                 </div>
-                <div *ngIf="impact.completionImpact.riskFactorCount > 0" class="mt-2 pt-2 border-t border-slate-200 text-xs text-orange-600">
-                  {{ impact.completionImpact.riskFactorCount }} risk factor{{ impact.completionImpact.riskFactorCount > 1 ? 's' : '' }} identified
+                <div class="text-xs">
+                  <span *ngIf="impact.completionImpact.riskFactorCount > 0" class="text-orange-600">{{ impact.completionImpact.riskFactorCount }} risk factor{{ impact.completionImpact.riskFactorCount > 1 ? 's' : '' }} identified</span>
+                  <span *ngIf="impact.completionImpact.riskFactorCount === 0" class="text-slate-500">No critical risk factors</span>
                 </div>
               </div>
 
               <!-- Timeline Card -->
-              <div class="bg-slate-50 rounded-lg p-5 border border-slate-200">
-                <div class="text-xs uppercase tracking-wide text-slate-500 mb-1 flex items-center gap-1">
+              <div class="bg-slate-50 rounded-lg p-5 border border-slate-200 flex flex-col">
+                <div class="h-6 text-xs uppercase tracking-wide text-slate-500 flex items-center gap-1 mb-2">
                   <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   DD Timeline
                 </div>
-                <div class="text-2xl font-bold text-slate-900">
-                  {{ impact.timelineImpact.ddTimeSavings }}
+                <div class="h-16">
+                  <div class="text-2xl font-bold text-slate-900">
+                    {{ impact.timelineImpact.ddTimeSavings }}
+                  </div>
+                  <div class="text-2xl font-bold text-slate-900">
+                    Faster
+                  </div>
                 </div>
-                <div class="text-xs text-slate-500 mt-1">
-                  Faster due diligence
-                </div>
-                <div class="mt-2 pt-2 border-t border-slate-200 text-xs text-slate-600">
+                <div class="text-xs text-slate-500">
                   {{ impact.timelineImpact.explanation }}
                 </div>
               </div>
@@ -340,28 +343,6 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
               </div>
             </div>
 
-            <!-- Evidence Sources (collapsible) -->
-            <div class="mb-6">
-              <button
-                type="button"
-                (click)="toggleMagiliumEvidence()"
-                class="text-sm text-slate-700 hover:text-slate-900 flex items-center gap-1 font-medium transition-colors">
-                <svg class="w-4 h-4 transition-transform" [class.rotate-180]="magiliumEvidenceExpanded()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-                View evidence sources
-              </button>
-              <div *ngIf="magiliumEvidenceExpanded()" class="mt-3 p-4 bg-white rounded-lg border border-slate-200">
-                <ul class="space-y-2 text-sm text-slate-700">
-                  <li *ngFor="let stat of magiliumStatistics()" class="flex items-start gap-2">
-                    <span class="font-semibold text-purple-700">{{ stat.value }}</span>
-                    <span>{{ stat.label }}</span>
-                    <a [href]="stat.sourceUrl" target="_blank" class="text-blue-600 hover:underline text-xs">({{ stat.source }})</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
             <!-- CTA Bar -->
             <div class="rounded-xl p-6 text-white" style="background: linear-gradient(to right, #6e2b86, #ed0776);">
               <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -381,6 +362,28 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
                     Visit Website →
                   </a>
                 </div>
+              </div>
+            </div>
+
+            <!-- Evidence Sources (collapsible) -->
+            <div class="mt-6">
+              <button
+                type="button"
+                (click)="toggleMagiliumEvidence()"
+                class="w-full p-4 flex items-center justify-between text-left bg-slate-50 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors">
+                <span class="font-medium text-slate-700">View evidence sources</span>
+                <svg class="w-5 h-5 transition-transform duration-200 text-slate-600" [class.rotate-90]="magiliumEvidenceExpanded()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+              <div *ngIf="magiliumEvidenceExpanded()" class="mt-3 p-4 bg-white rounded-lg border border-slate-200">
+                <ul class="space-y-2 text-sm text-slate-700">
+                  <li *ngFor="let stat of magiliumStatistics()" class="flex items-start gap-2">
+                    <span class="font-semibold text-purple-700">{{ stat.value }}</span>
+                    <span>{{ stat.label }}</span>
+                    <a [href]="stat.sourceUrl" target="_blank" class="text-blue-600 hover:underline text-xs">({{ stat.source }})</a>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
@@ -537,7 +540,7 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
           <div class="grid md:grid-cols-3 gap-4 mb-4">
             <div class="text-center p-4 rounded-lg bg-blue-50 border border-blue-200">
               <div class="text-sm text-slate-600 mb-1">Current Overall Level</div>
-              <div class="text-2xl font-bold text-slate-900">{{ timeline.overallLevel | number:'1.1-1' }}</div>
+              <div class="text-2xl font-bold text-slate-900">{{ overallPercent() | number:'1.0-1' }}%</div>
             </div>
             <div class="text-center p-4 rounded-lg bg-purple-50 border border-purple-200">
               <div class="text-sm text-slate-600 mb-1">Estimated Timeline</div>
