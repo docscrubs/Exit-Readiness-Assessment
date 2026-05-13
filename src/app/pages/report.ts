@@ -8,8 +8,8 @@ import { AssessmentSpec, Responses } from '../models/assessment';
 import { RadarComponent } from '../components/radar';
 import { ValuationInputs, ValuationResult, getDefaultValuationInputs } from '../models/valuation';
 import { ValuationService } from '../services/valuation.service';
-import { MagiliumImpactService } from '../services/magilium-impact.service';
-import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '../models/magilium-impact';
+import { ExitPreparationImpactService } from '../services/exit-preparation-impact.service';
+import { ExitPreparationImpactSummary, ExitPreparationStatistic, EXIT_PREPARATION_STATISTICS } from '../models/exit-preparation-impact';
 
 @Component({
   selector: 'app-report-page',
@@ -229,21 +229,21 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
           </div>
         </div>
 
-        <!-- Professional Exit Preparation Impact Section (Magilium) -->
-        <div *ngIf="magiliumImpact() as impact" class="rounded-xl border border-slate-200 mb-6 overflow-hidden shadow-sm bg-white">
+        <!-- Professional Exit Preparation Impact Section -->
+        <div *ngIf="exitPrepImpact() as impact" class="rounded-xl border border-slate-200 mb-6 overflow-hidden shadow-sm bg-white">
           <!-- Collapsible Header -->
           <button
             type="button"
-            (click)="toggleMagiliumSection()"
+            (click)="toggleExitPrepSection()"
             class="w-full p-5 flex items-center justify-between text-left hover:bg-slate-50 transition-colors">
-            <span class="font-semibold transition-colors" [ngClass]="magiliumSectionExpanded() ? 'text-slate-900' : 'text-red-600 animate-pulse'">See how professional preparation can improve your exit outcome in value, timescale and chance of completion here</span>
-            <svg class="w-6 h-6 transition-transform duration-200 flex-shrink-0 ml-4" [class.rotate-90]="magiliumSectionExpanded()" [ngClass]="magiliumSectionExpanded() ? 'text-slate-600' : 'text-red-600'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <span class="font-semibold transition-colors" [ngClass]="exitPrepSectionExpanded() ? 'text-slate-900' : 'text-red-600 animate-pulse'">See how professional preparation can improve your exit outcome in value, timescale and chance of completion here</span>
+            <svg class="w-6 h-6 transition-transform duration-200 flex-shrink-0 ml-4" [class.rotate-90]="exitPrepSectionExpanded()" [ngClass]="exitPrepSectionExpanded() ? 'text-slate-600' : 'text-red-600'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
             </svg>
           </button>
 
           <!-- Expanded Content -->
-          <div *ngIf="magiliumSectionExpanded()" class="px-6 pb-6">
+          <div *ngIf="exitPrepSectionExpanded()" class="px-6 pb-6">
             <!-- Summary Cards -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <!-- Valuation Improvement Card -->
@@ -332,7 +332,7 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
                         <span class="text-green-600">{{ opp.mitigatedState }}</span>
                       </div>
                       <div class="mt-2 text-sm text-slate-700">
-                        <strong>How:</strong> {{ opp.magiliumApproach }}
+                        <strong>How:</strong> {{ opp.approach }}
                       </div>
                       <div class="mt-2 text-xs text-slate-500">
                         Source: <a [href]="opp.evidenceUrl" target="_blank" class="text-blue-600 hover:underline">{{ opp.evidenceSource }}</a>
@@ -343,42 +343,20 @@ import { MagiliumImpactSummary, MagiliumStatistic, MAGILIUM_STATISTICS } from '.
               </div>
             </div>
 
-            <!-- CTA Bar -->
-            <div class="rounded-xl p-6 text-white" style="background: linear-gradient(to right, #6e2b86, #ed0776);">
-              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div>
-                  <h4 class="font-semibold text-lg">Ready to maximise your exit value?</h4>
-                  <p class="text-purple-100 text-sm mt-1">
-                    Magilium Ltd prepares SMEs for successful exits, typically 6-12 months before transaction.
-                  </p>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-3">
-                  <a href="mailto:connect&#64;magilium.com"
-                     class="px-6 py-3 bg-white text-purple-700 rounded-lg font-semibold text-center hover:bg-purple-50 transition-colors shadow-sm">
-                    Email Us
-                  </a>
-                  <a href="https://www.magilium.com" target="_blank"
-                     class="px-6 py-3 border-2 border-white text-white rounded-lg font-semibold text-center hover:bg-white/10 transition-colors">
-                    Visit Website →
-                  </a>
-                </div>
-              </div>
-            </div>
-
             <!-- Evidence Sources (collapsible) -->
             <div class="mt-6">
               <button
                 type="button"
-                (click)="toggleMagiliumEvidence()"
+                (click)="toggleExitPrepEvidence()"
                 class="w-full p-4 flex items-center justify-between text-left bg-slate-50 rounded-lg border border-slate-200 hover:bg-slate-100 transition-colors">
                 <span class="font-medium text-slate-700">View evidence sources</span>
-                <svg class="w-5 h-5 transition-transform duration-200 text-slate-600" [class.rotate-90]="magiliumEvidenceExpanded()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="w-5 h-5 transition-transform duration-200 text-slate-600" [class.rotate-90]="exitPrepEvidenceExpanded()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
               </button>
-              <div *ngIf="magiliumEvidenceExpanded()" class="mt-3 p-4 bg-white rounded-lg border border-slate-200">
+              <div *ngIf="exitPrepEvidenceExpanded()" class="mt-3 p-4 bg-white rounded-lg border border-slate-200">
                 <ul class="space-y-2 text-sm text-slate-700">
-                  <li *ngFor="let stat of magiliumStatistics()" class="flex items-start gap-2">
+                  <li *ngFor="let stat of exitPrepStatistics()" class="flex items-start gap-2">
                     <span class="font-semibold text-purple-700">{{ stat.value }}</span>
                     <span>{{ stat.label }}</span>
                     <a [href]="stat.sourceUrl" target="_blank" class="text-blue-600 hover:underline text-xs">({{ stat.source }})</a>
@@ -705,22 +683,22 @@ export class ReportPageComponent implements OnInit {
   private svc = inject(AssessmentService);
   recSvc = inject(RecommendationService);
   valuationSvc = inject(ValuationService);
-  magiliumSvc = inject(MagiliumImpactService);
+  exitPrepSvc = inject(ExitPreparationImpactService);
   router = inject(Router);
 
   spec = signal<AssessmentSpec | null>(null);
   responses = signal<Responses>({});
 
-  primaryColor = '#3f1954';
-  accentColor = '#ed0776';
+  primaryColor = 'var(--brand-primary)';
+  accentColor = 'var(--brand-accent)';
 
   // Valuation signals
   valuationInputs = signal<ValuationInputs | null>(null);
   methodologySectionExpanded = signal(false);
 
-  // Magilium impact section signals
-  magiliumSectionExpanded = signal(false);
-  magiliumEvidenceExpanded = signal(false);
+  // Exit preparation impact section signals
+  exitPrepSectionExpanded = signal(false);
+  exitPrepEvidenceExpanded = signal(false);
 
   valuationResult = computed<ValuationResult | null>(() => {
     const inputs = this.valuationInputs();
@@ -732,16 +710,16 @@ export class ReportPageComponent implements OnInit {
     this.methodologySectionExpanded.update((v) => !v);
   }
 
-  toggleMagiliumSection() {
-    this.magiliumSectionExpanded.update((v) => !v);
+  toggleExitPrepSection() {
+    this.exitPrepSectionExpanded.update((v) => !v);
   }
 
-  toggleMagiliumEvidence() {
-    this.magiliumEvidenceExpanded.update((v) => !v);
+  toggleExitPrepEvidence() {
+    this.exitPrepEvidenceExpanded.update((v) => !v);
   }
 
-  // Magilium impact computed signal
-  magiliumImpact = computed<MagiliumImpactSummary | null>(() => {
+  // Exit preparation impact computed signal
+  exitPrepImpact = computed<ExitPreparationImpactSummary | null>(() => {
     const spec = this.spec();
     const resp = this.responses();
     if (!spec || !resp) return null;
@@ -762,7 +740,7 @@ export class ReportPageComponent implements OnInit {
       ? comparison.gaps.filter((g) => g.belowMinimum).length
       : 0;
 
-    return this.magiliumSvc.calculateImpact(
+    return this.exitPrepSvc.calculateImpact(
       domainAverages,
       thresholdViolations,
       this.valuationResult(),
@@ -771,8 +749,8 @@ export class ReportPageComponent implements OnInit {
     );
   });
 
-  magiliumStatistics = computed<MagiliumStatistic[]>(() => {
-    return this.magiliumSvc.getStatistics();
+  exitPrepStatistics = computed<ExitPreparationStatistic[]>(() => {
+    return this.exitPrepSvc.getStatistics();
   });
 
   // Computed signals for exit readiness features

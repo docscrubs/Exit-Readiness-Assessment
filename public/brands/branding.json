@@ -1,0 +1,31 @@
+{
+  "brands": {
+    "magilium": {
+      "id": "magilium",
+      "displayName": "Magilium",
+      "logoUrl": "https://cdn.builder.io/api/v1/image/assets%2F0e7a1a51f039405daa4256b25ac4bebf%2F7049a9cc6fb341c4a1eddb5f6fa76e18",
+      "faviconBasePath": "/brands/magilium/favicons",
+      "colours": {
+        "primary": "#3f1954",
+        "primaryDark": "#6e2b86",
+        "accent": "#ed0776"
+      }
+    },
+    "vivolution": {
+      "id": "vivolution",
+      "displayName": "Vivolution",
+      "logoUrl": "/brands/vivolution/Vivolution_Logo.png",
+      "faviconBasePath": "/brands/vivolution/favicons",
+      "colours": {
+        "primary": "#27bdf0",
+        "primaryDark": "#00365c",
+        "accent": "#ed0776"      
+      }
+    }
+  },
+  "hostnameMap": {
+    "exit-readiness.magilium.com": "magilium",
+    "exit-readiness.vivolution.co.uk": "vivolution"
+  },
+  "defaultBrand": "magilium"
+}

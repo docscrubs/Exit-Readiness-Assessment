@@ -7,14 +7,15 @@ module.exports = {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji']
       },
       colors: {
-        primary: '#1e3a8a',      // Professional dark blue
-        secondary: '#3b82f6',    // Medium blue
-        accent: '#10b981',       // Success green
-        warning: '#f59e0b',      // Amber warning
-        danger: '#dc2626',       // Red danger
-        success: '#059669',      // Success state
+        primary: 'rgb(var(--brand-primary-rgb) / <alpha-value>)',
+        'primary-dark': 'rgb(var(--brand-primary-dark-rgb) / <alpha-value>)',
+        accent: 'rgb(var(--brand-accent-rgb) / <alpha-value>)',
+        secondary: '#3b82f6',
+        warning: '#f59e0b',
+        danger: '#dc2626',
+        success: '#059669',
         copy: '#000000',
-        background: '#0f172a'    // Dark slate background
+        background: '#0f172a'
       }
     },
   },

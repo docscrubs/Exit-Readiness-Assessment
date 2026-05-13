@@ -5,7 +5,12 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/index.vivolution.html",
+      "has": [{ "type": "host", "value": "exit-readiness.vivolution.co.uk" }]
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.magilium.html"
     }
   ]
 }
