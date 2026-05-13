@@ -445,8 +445,8 @@ export class AssessmentPageComponent implements OnInit {
   responses = signal<Responses>({});
   showTips = signal(false);
 
-  primaryColor = '#3f1954';
-  accentColor = '#ed0776';
+  primaryColor = 'var(--brand-primary)';
+  accentColor = 'var(--brand-accent)';
 
   importCode = '';
   restoreToast = signal<{ text: string } | null>(null);

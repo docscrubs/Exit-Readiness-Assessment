@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import {
-  MagiliumImpactSummary,
-  MagiliumStatistic,
+  ExitPreparationImpactSummary,
+  ExitPreparationStatistic,
   MitigationOpportunity,
-  MAGILIUM_STATISTICS,
-} from '../models/magilium-impact';
+  EXIT_PREPARATION_STATISTICS,
+} from '../models/exit-preparation-impact';
 import { ValuationInputs, ValuationResult } from '../models/valuation';
 import { ThresholdViolation } from '../models/assessment';
 
 /**
- * Service for calculating the potential impact of Magilium's
- * professional exit preparation services based on assessment results.
+ * Service for calculating the potential impact of professional
+ * exit preparation services based on assessment results.
  */
 @Injectable({ providedIn: 'root' })
-export class MagiliumImpactService {
+export class ExitPreparationImpactService {
   /**
    * Calculate full impact analysis based on assessment data
    */
@@ -23,7 +23,7 @@ export class MagiliumImpactService {
     valuationResult: ValuationResult | null,
     valuationInputs: ValuationInputs | null,
     belowMinimumCount: number
-  ): MagiliumImpactSummary {
+  ): ExitPreparationImpactSummary {
     const opportunities: MitigationOpportunity[] = [];
 
     // Calculate valuation-related mitigations
@@ -117,7 +117,7 @@ export class MagiliumImpactService {
         currentValue: -25,
         mitigatedValue: -12,
         unit: '%',
-        magiliumApproach:
+        approach:
           'Document customer diversification strategy, support securing multi-year contracts, institutionalise relationships across multiple contacts per customer, create customer dependency reduction roadmap.',
         evidenceSource: 'L40 M&A Advisory Research',
         evidenceUrl: 'https://www.l40.com/insights/customer-concentration-risk',
@@ -134,7 +134,7 @@ export class MagiliumImpactService {
         currentValue: -12,
         mitigatedValue: -5,
         unit: '%',
-        magiliumApproach:
+        approach:
           'Document customer acquisition pipeline, demonstrate diversification trend, secure contract extensions with key accounts.',
         evidenceSource: 'Morgan & Westfield M&A Research',
         evidenceUrl: 'https://www.morganandwestfield.com/',
@@ -154,7 +154,7 @@ export class MagiliumImpactService {
         currentValue: -18,
         mitigatedValue: -10,
         unit: '%',
-        magiliumApproach:
+        approach:
           'Build compelling growth narrative, document sales pipeline and conversion rates, market opportunity analysis, identify and document growth levers, contextualise historical decline with turnaround evidence.',
         evidenceSource: 'Drooms M&A Deal Intelligence',
         evidenceUrl: 'https://drooms.com/',
@@ -175,7 +175,7 @@ export class MagiliumImpactService {
         currentValue: -8,
         mitigatedValue: 0,
         unit: '%',
-        magiliumApproach:
+        approach:
           'Professional data room structure and indexing, document housekeeping and version control, gap identification with remediation guidance, buyer-ready presentation format.',
         evidenceSource: 'IDEALS Virtual Data Room Research',
         evidenceUrl: 'https://www.idealsvdr.com/',
@@ -235,7 +235,7 @@ export class MagiliumImpactService {
 
   /**
    * Calculate documentation and data room opportunities based on domain gaps
-   * Note: Excludes financial domain as Magilium is not an accountancy firm
+   * Note: Excludes the financial domain (handled separately by accountancy services)
    */
   private calculateDocumentationOpportunities(
     domainAverages: { id: string; name: string; avg: number }[]
@@ -290,7 +290,7 @@ export class MagiliumImpactService {
     };
 
     for (const domain of domainAverages) {
-      // Skip financial domain - Magilium doesn't provide accountancy services
+      // Skip financial domain (handled separately by accountancy services)
       if (domain.id === 'financial') continue;
 
       // Add opportunity if domain is below Level 2 (Defined)
@@ -305,7 +305,7 @@ export class MagiliumImpactService {
           currentValue: domain.avg,
           mitigatedValue: 2,
           unit: 'level',
-          magiliumApproach: opp.approach,
+          approach: opp.approach,
           evidenceSource: opp.source,
           evidenceUrl: opp.url,
         });
@@ -318,7 +318,7 @@ export class MagiliumImpactService {
   /**
    * Get key statistics for display
    */
-  getStatistics(): MagiliumStatistic[] {
-    return MAGILIUM_STATISTICS;
+  getStatistics(): ExitPreparationStatistic[] {
+    return EXIT_PREPARATION_STATISTICS;
   }
 }

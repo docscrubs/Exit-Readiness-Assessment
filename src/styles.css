@@ -5,6 +5,15 @@
 @layer base {
   :root {
     --radius: 0.5rem;
+
+    /* Brand colour defaults (Magilium). BrandingService overrides these at
+       runtime once branding.json is loaded. Pre-JS render uses these. */
+    --brand-primary: #3f1954;
+    --brand-primary-rgb: 63 25 84;
+    --brand-primary-dark: #6e2b86;
+    --brand-primary-dark-rgb: 110 43 134;
+    --brand-accent: #ed0776;
+    --brand-accent-rgb: 237 7 118;
   }
 }
 

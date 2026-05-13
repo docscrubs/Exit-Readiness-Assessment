@@ -24,8 +24,8 @@ export class RadarComponent {
   @Input() labels: string[] = [];
   @Input() values: number[] = [];
   @Input() max = 4;
-  @Input() strokeColor = '#3f1954';
-  @Input() fillColor = '#ed0776';
+  @Input() strokeColor = 'var(--brand-primary)';
+  @Input() fillColor = 'var(--brand-accent)';
   /** Horizontal padding percent (0-100). Reduces horizontal plotting radius to avoid label clipping. */
   @Input() horizontalPaddingPct = 0;
   @Input() overlayValues: number[] | null = null;

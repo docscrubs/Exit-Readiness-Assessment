@@ -1,5 +1,5 @@
 /**
- * Magilium Impact Analysis Models
+ * Exit Preparation Impact Analysis Models
  *
  * These interfaces define the structure for calculating and displaying
  * the potential impact of professional exit preparation services.
@@ -33,8 +33,8 @@ export interface MitigationOpportunity {
   /** Unit for display (e.g., '%', 'weeks', 'probability') */
   unit: string;
 
-  /** How Magilium addresses this */
-  magiliumApproach: string;
+  /** How professional preparation addresses this */
+  approach: string;
 
   /** Evidence/source citation */
   evidenceSource: string;
@@ -46,7 +46,7 @@ export interface MitigationOpportunity {
 /**
  * Summary of all impact calculations
  */
-export interface MagiliumImpactSummary {
+export interface ExitPreparationImpactSummary {
   /** Whether there are any mitigatable issues */
   hasMitigatableIssues: boolean;
 
@@ -87,7 +87,7 @@ export interface MagiliumImpactSummary {
 /**
  * A statistic for display in the report
  */
-export interface MagiliumStatistic {
+export interface ExitPreparationStatistic {
   /** The statistic value (e.g., "93%", "2-3x") */
   value: string;
   /** Short description */
@@ -101,7 +101,7 @@ export interface MagiliumStatistic {
 /**
  * Evidence-based statistics (hardcoded, credible sources)
  */
-export const MAGILIUM_STATISTICS: MagiliumStatistic[] = [
+export const EXIT_PREPARATION_STATISTICS: ExitPreparationStatistic[] = [
   {
     value: '70-80%',
     label: 'of SME sales fail to complete',

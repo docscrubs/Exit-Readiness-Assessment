@@ -1,8 +1,8 @@
 <div class="min-h-screen flex flex-col bg-gradient-to-b from-slate-50 via-white to-slate-50 text-slate-800">
   <header class="sticky top-0 z-30 backdrop-blur supports-[backdrop-filter]:bg-white/70 bg-white/90 border-b border-slate-200">
     <div class="container mx-auto px-6 py-4 flex items-center justify-between">
-      <a class="flex items-center gap-2 font-semibold text-slate-900" routerLink="/" href="https://1fb6807f6f6c4248b129faa2f6263e85-cf6b5f348a55421a9cd37c01f.fly.dev/">
-        <span class="inline-flex h-8 w-8 items-center justify-center rounded-md text-white font-bold" style="background-color: rgba(255, 255, 255, 1); background-image: url('https://cdn.builder.io/api/v1/image/assets%2F0e7a1a51f039405daa4256b25ac4bebf%2F7049a9cc6fb341c4a1eddb5f6fa76e18'); background-repeat: no-repeat; background-position: center; background-size: cover;"></span>
+      <a class="flex items-center gap-2 font-semibold text-slate-900" routerLink="/">
+        <img *ngIf="brand() as b" [src]="b.logoUrl" [alt]="b.displayName + ' logo'" class="h-8 w-8 rounded-md object-contain bg-white" />
         <span>SME Exit Readiness Assessment</span>
       </a>
       <nav class="hidden md:flex items-center gap-6 text-sm">
@@ -19,7 +19,7 @@
 
   <footer class="border-t border-slate-200 bg-white/70">
     <div class="container mx-auto px-6 py-8 text-sm text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p>© {{ currentYear }} SME Exit Readiness Assessment</p>
+      <p>© {{ currentYear }} <ng-container *ngIf="brand() as b">{{ b.displayName }} — </ng-container>SME Exit Readiness Assessment</p>
       <div class="flex items-center gap-4">
         <a class="hover:text-primary" routerLink="/">Home</a>
         <a class="hover:text-primary" routerLink="/assessment">Assessment</a>
